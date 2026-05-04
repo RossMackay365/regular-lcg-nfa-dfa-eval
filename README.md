@@ -8,10 +8,13 @@ Generation: A Comparative Evaluation".
 
 ### Experimental Structure
 
-The experiment compares NFA and DFA propagators for the regular constraint
+The experiment compares four approaches to enforcing the regular constraint
 across 60 problem instances, varying blowup ratio, difficulty, and automaton
-structure (cyclic vs acyclic). Each instance is solved once with each
-propagator.
+structure (cyclic vs acyclic). Each instance is run four times: with the NFA
+propagator on NFA data, with the DFA propagator on DFA data, and with solver
+decomposition on each of those two data formats. This design allows the effect
+of the propagator and the effect of the automaton representation to be assessed
+independently.
 
 The instances come from three problem types: car sequencing, rostering, and
 synthetic high-blowup constructions. These are modelled differently in MiniZinc
@@ -34,19 +37,25 @@ on the NFA using dk.brics.automaton. This file is the source of truth. The
 corresponding .dzn file is generated from it and can be regenerated at any
 time by running scripts/generate_dzn.py.
 
-**instances/{blowup_level}/{instance_name}.dzn**
-The MiniZinc data file, generated from the corresponding .json file. Contains
-the NFA transition table formatted for MiniZinc, along with sequence length
-and domain size. Both propagator runs use this same file. The DFA propagator
-derives the DFA internally at initialisation by running subset construction on
-the NFA transition table, using the same procedure as during instance
-generation. The expected DFA state count recorded in the .json file can be
-used to verify this derivation is correct.
+**instances/nfa/{blowup_level}/{instance_name}.dzn**
+The MiniZinc data file for NFA-format runs, generated from the corresponding
+.json file. Contains the NFA transition table formatted for MiniZinc, along
+with sequence length and domain size. Used for both the NFA propagator run and
+the NFA decomposition run.
+
+**instances/dfa/{blowup_level}/{instance_name}.dzn**
+The MiniZinc data file for DFA-format runs, generated from the corresponding
+.json file by running subset construction on the NFA transition table. Contains
+the DFA transition table formatted for MiniZinc, along with sequence length and
+domain size. The expected DFA state count recorded in the .json file can be
+used to verify that subset construction produced the correct result. Used for
+both the DFA propagator run and the DFA decomposition run.
 
 **model/{problem_type}.mzn**
 The MiniZinc model for the problem type. One model file covers all instances
 of that problem type regardless of blowup ratio, difficulty, or automaton
-structure. The model does not change between propagator runs.
+structure. The model does not change between runs; the choice of propagator
+versus decomposition is determined by the solver configuration at run time.
 
 ---
 
