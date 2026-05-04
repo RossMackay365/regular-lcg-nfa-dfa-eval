@@ -33,9 +33,10 @@ Each instance consists of three files:
 The source definition of the instance. Contains the NFA transition table,
 accepting states, start state, and metadata. The blowup ratio and DFA state
 count are computed during instance generation by running subset construction
-on the NFA using dk.brics.automaton. This file is the source of truth. The
-corresponding .dzn file is generated from it and can be regenerated at any
-time by running scripts/generate_dzn.py.
+followed by minimization on the NFA using dk.brics.automaton. The blowup ratio
+is therefore the ratio of minimal DFA states to NFA states. This file is the
+source of truth. The corresponding .dzn files are generated from it and can be
+regenerated at any time by running scripts/generate_dzn.py.
 
 **instances/nfa/{blowup_level}/{instance_name}.dzn**
 The MiniZinc data file for NFA-format runs, generated from the corresponding
@@ -45,11 +46,12 @@ the NFA decomposition run.
 
 **instances/dfa/{blowup_level}/{instance_name}.dzn**
 The MiniZinc data file for DFA-format runs, generated from the corresponding
-.json file by running subset construction on the NFA transition table. Contains
-the DFA transition table formatted for MiniZinc, along with sequence length and
-domain size. The expected DFA state count recorded in the .json file can be
-used to verify that subset construction produced the correct result. Used for
-both the DFA propagator run and the DFA decomposition run.
+.json file by running subset construction followed by minimization on the NFA
+transition table. Contains the minimal DFA transition table formatted for
+MiniZinc, along with sequence length and domain size. The expected DFA state
+count recorded in the .json file can be used to verify that this derivation
+produced the correct result. Used for both the DFA propagator run and the DFA
+decomposition run.
 
 **model/{problem_type}.mzn**
 The MiniZinc model for the problem type. One model file covers all instances
