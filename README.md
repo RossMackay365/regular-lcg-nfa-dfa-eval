@@ -6,58 +6,104 @@ Generation: A Comparative Evaluation".
 
 ---
 
+### Workflow
+
+The repository works in three stages:
+
+1. **Templates.** Each problem type has a MiniZinc model and a Python
+   generator. The model defines how the problem is solved; the generator
+   defines how instances of it are built from parameters. These are written
+   once and committed to the repository.
+
+2. **Generation.** Running `python scripts/generate_instances.py` invokes
+   every generator across a sweep of parameter values, builds the underlying
+   automata, classifies each candidate by blowup, difficulty, and structure,
+   samples five per cell, and writes the results to disk. This produces 60
+   .json files (one per instance) and 120 .dzn files (an NFA and a DFA
+   version of each).
+
+3. **Experiments.** Running `python scripts/run_experiments.py` solves each
+   of the 60 instances three times: once with the NFA propagator, once with
+   the DFA propagator, and once with solver decomposition. Statistics are
+   recorded for every run. 180 runs in total.
+
+The 60 .json and 120 .dzn files are committed to the repository. The
+experiments can be reproduced using those files alone. The generator scripts
+are included so the dataset can also be regenerated from scratch under the
+master seed.
+
+---
+
 ### Experimental Structure
 
-The experiment compares four approaches to enforcing the regular constraint
+The experiment compares three approaches to enforcing the regular constraint
 across 60 problem instances, varying blowup ratio, difficulty, and automaton
-structure (cyclic vs acyclic). Each instance is run four times: with the NFA
+structure (cyclic vs acyclic). Each instance is run three times: with the NFA
 propagator on NFA data, with the DFA propagator on DFA data, and with solver
-decomposition on each of those two data formats. This design allows the effect
-of the propagator and the effect of the automaton representation to be assessed
-independently.
+decomposition. This design allows the effect of the propagator and the effect of
+the automaton representation to be assessed independently.
 
-The instances come from three problem types: car sequencing, rostering, and
-synthetic high-blowup constructions. These are modelled differently in MiniZinc
-but are all compared on the same axes. The problem type is not the unit of
-comparison, the automaton structure is. Two instances from different problem
-types can belong to the same experimental group if they share the same blowup
-ratio, difficulty, and cyclic/acyclic classification.
+The instances come from five sources: individual shift scheduling,
+capacity-only car sequencing, nonograms, pentominoes, and synthetic
+constructions. These are modelled differently in MiniZinc but are all compared
+on the same axes. The source is not the unit of comparison, the automaton
+structure is. Two instances from different sources can belong to the same
+experimental group if they share the same blowup ratio, difficulty, and
+cyclic/acyclic classification.
+
+All five sources are regular-dominated. Individual shift scheduling and
+capacity-only car sequencing are stripped formulations containing only their
+pattern-based constraints; demand and staffing constraints are excluded so
+that the regular constraint dominates the constraint network and observed
+differences can be attributed to the propagator. Nonograms and pentominoes
+are expressed as combinations of regular constraints, with no other constraint
+types present. Synthetic instances consist of a single regular constraint
+over a sequence.
+
+The sources cover the experimental matrix as follows:
+
+|          | Low blowup                  | Medium blowup                                  | High blowup            |
+|----------|-----------------------------|------------------------------------------------|------------------------|
+| Cyclic   | shift scheduling            | shift scheduling, capacity-only car sequencing | pentominoes, synthetic |
+| Acyclic  | nonograms, synthetic        | synthetic                                      | synthetic              |
+
+These positions reflect each source's typical characteristics, but the final
+cell assignment for any individual instance is empirical: every candidate is
+classified by its measured blowup ratio, difficulty, and structure, and
+binned accordingly. Real-world scheduling problems rarely produce acyclic
+regular constraints or exponential blowup, so synthetic constructions are
+still required to populate cells that the real-problem sources do not reach.
+
+Nonograms and pentominoes contain multiple regular constraints per instance. For these sources the per-instance blowup ratio used for
+binning is the maximum across all regular constraints in the instance.
+The full per-constraint detail is preserved in the instance's .json file.
 
 ---
 
 ### Instance Structure
 
-Each instance consists of three files:
+Each instance is represented by three files.
 
 **automata/{blowup_level}/{instance_name}.json**
-The source definition of the instance. Contains the NFA transition table,
-accepting states, start state, and metadata. The blowup ratio and DFA state
-count are computed during instance generation by running subset construction
-followed by minimization on the NFA using dk.brics.automaton. The blowup ratio
-is therefore the ratio of minimal DFA states to NFA states. This file is the
-source of truth. The corresponding .dzn files are generated from it and can be
-regenerated at any time by running scripts/generate_dzn.py.
+The source of truth for the instance. Contains its source parameters, the
+NFAs derived from them, and metadata (minimal DFA state count, blowup ratio,
+structure classification, difficulty bin, generator seed). The .dzn files
+are derived from this and can be regenerated by running
+scripts/generate_dzn.py.
 
 **instances/nfa/{blowup_level}/{instance_name}.dzn**
-The MiniZinc data file for NFA-format runs, generated from the corresponding
-.json file. Contains the NFA transition table formatted for MiniZinc, along
-with sequence length and domain size. Used for both the NFA propagator run and
-the NFA decomposition run.
+The MiniZinc data file used by the NFA propagator run. Contains the NFA
+transition tables and any other parameters the .mzn model needs.
 
 **instances/dfa/{blowup_level}/{instance_name}.dzn**
-The MiniZinc data file for DFA-format runs, generated from the corresponding
-.json file by running subset construction followed by minimization on the NFA
-transition table. Contains the minimal DFA transition table formatted for
-MiniZinc, along with sequence length and domain size. The expected DFA state
-count recorded in the .json file can be used to verify that this derivation
-produced the correct result. Used for both the DFA propagator run and the DFA
-decomposition run.
+The MiniZinc data file used by the DFA propagator run and the decomposition
+run. Contains the minimal DFA transition tables, produced by running subset
+construction and minimisation on each NFA, plus the same problem parameters
+as the NFA .dzn.
 
-**model/{problem_type}.mzn**
-The MiniZinc model for the problem type. One model file covers all instances
-of that problem type regardless of blowup ratio, difficulty, or automaton
-structure. The model does not change between runs; the choice of propagator
-versus decomposition is determined by the solver configuration at run time.
+The MiniZinc model for each problem type is at model/{problem_type}.mzn.
+One model file covers all instances of that type, and the model does not
+change between runs.
 
 ---
 
@@ -70,7 +116,63 @@ Instances follow the pattern:
 For example: medium_cyclic_hard_03 is the third hard instance with a
 medium blowup cyclic automaton.
 
-- Blowup: low (< 2x), medium (2-10x), high (> 10x)
-- Structure: cyclic or acyclic
-- Difficulty: easy or hard (based on node count)
+- Blowup: low (< 2x), medium (2-10x), high (> 10x), measured as minimal DFA
+  states divided by NFA states
+- Structure: cyclic or acyclic, determined by whether the minimal DFA's
+  transition graph contains a non-self-loop cycle
+- Difficulty: easy or hard, defined by the number of search nodes used by
+  the decomposition baseline (DFA data, no propagator) on the instance.
+  Instances are split at the median node count within each
+  blowup × structure group
 - Index: distinguishes instances within the same experimental group
+
+---
+
+### Instance Generation
+
+Instances are generated under a fixed master seed and the procedure is
+pre-committed before any propagator runs are executed. The pipeline is run
+once per source:
+
+1. A parameterised generator produces a candidate pool of approximately 30 to
+   50 instances by sweeping the parameter space relevant to that source (rule
+   count and sequence length for shift scheduling, clue-list shapes for
+   nonograms, board dimensions for pentominoes, and so on). Each candidate
+   carries its full set of source parameters and the NFAs derived from them.
+2. For each candidate, the minimal DFA is computed for every NFA in the
+   instance by running subset construction followed by minimisation. The
+   blowup ratio (maximum across automata), cyclic/acyclic classification,
+   and decomposition-baseline node count are recorded.
+3. Each candidate is binned into a (blowup, structure, difficulty) cell.
+4. Five instances are sampled uniformly from each cell under the master seed.
+   If a cell is under-populated after pooling, parameter ranges are expanded
+   and the pool is regenerated. Once propagator runs begin, no further
+   sampling or re-pooling is performed.
+5. Each sampled instance is written to automata/{blowup}/{name}.json with its
+   source parameters, automata, and classification metadata. The corresponding
+   NFA and minimal DFA .dzn files are then produced by scripts/generate_dzn.py.
+
+The committed .json and .dzn files are the experiment of record. The
+generators are included so the sample can be reproduced from the master
+seed alone.
+
+The pipeline is implemented in scripts/ as follows:
+
+- **scripts/generate_instances.py**: orchestrator. Runs each generator in
+  turn, classifies and bins the resulting candidates, samples per cell, and
+  writes the .json files. It then invokes generate_dzn.py to produce the .dzn
+  outputs.
+- **scripts/automata.py**: shared utilities for building NFAs, running
+  subset construction and minimisation, computing blowup ratios, and
+  classifying cyclic/acyclic structure.
+- **scripts/classify.py**: shared logic for the difficulty axis. Runs the
+  decomposition baseline to obtain a node count and assigns the difficulty
+  bin within each blowup × structure group.
+- **scripts/generators/{source}.py**: one file per source. Each exposes a
+  parameterised candidate generator returning instances with their full
+  parameter set and derived NFAs.
+- **scripts/generate_dzn.py**: converts a .json instance into its NFA and
+  minimal-DFA .dzn files. Idempotent and runnable independently of the
+  orchestrator if the .dzn schema is changed.
+- **scripts/run_experiments.py**: runs the three propagator configurations on
+  every committed instance and collects per-run statistics.
