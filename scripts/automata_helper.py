@@ -7,7 +7,7 @@ def nfa_to_min_dfa(Q, S, d, q0, F):
     """
 
     # -----------------------------
-    # 1. Subset Constructionk
+    # 1. Subset Construction
     # -----------------------------
     start = frozenset([q0])
     queue = deque([start])
