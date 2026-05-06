@@ -39,4 +39,13 @@ constraint
 
 solve :: int_search(schedule, input_order, indomain_min) satisfy;
 
-output [show(schedule[i]) ++ if i mod 7 = 0 then "\n" else " " endif | i in Positions];
+output [
+  if i mod 7 = 1 then
+    "\nWeek " ++ show((i - 1) div 7 + 1) ++ "\n"
+  else
+    ""
+  endif
+  ++ "  Day " ++ show(((i - 1) mod 7) + 1)
+  ++ ": Shift " ++ show(schedule[i]) ++ "\n"
+| i in Positions
+];

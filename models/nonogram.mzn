@@ -77,8 +77,13 @@ constraint forall (c in 1..width) (
 
 solve satisfy;
 
+function string: cell(int: x) =
+    if x == 2 then "#" else "." endif;
+
 output [
-    "grid = \n",
-    show2d(grid),
-    ";\n"
+  "Nonogram Solution:\n\n"
+] ++
+[
+  concat([ cell(fix(grid[r,c])) | c in 1..width ]) ++ "\n"
+  | r in 1..height
 ];

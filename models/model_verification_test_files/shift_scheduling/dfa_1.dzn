@@ -1,0 +1,31 @@
+%
+% Test: shift_scheduling / DFA #1
+%
+% Language: sequences of length 5 over {Day=1, Night=2} that contain no two
+%           consecutive Nights.
+%
+% Automaton (DFA, Q=2, S=2):
+%   q0 = 1, F = {1, 2}
+%   q1 = "last symbol was not Night (or start)"
+%   q2 = "last symbol was Night"
+%   Transitions (state 0 = dead):
+%     q1 + Day(1)   -> q1
+%     q1 + Night(2) -> q2
+%     q2 + Day(1)   -> q1
+%     q2 + Night(2) -> 0
+%
+
+sequence_length = 5;
+mode = 0;
+Q = 2;
+S = 2;
+q0 = 1;
+F = {1, 2};
+d_dfa = array2d(1..2, 1..2, [
+    1, 2,
+    1, 0,
+]);
+d_nfa = array2d(1..2, 1..2, [
+    {}, {},
+    {}, {},
+]);

@@ -25,33 +25,37 @@ int: S;
 
 array[1..n_expressions] of int: q0;
 array[1..n_expressions] of set of int: F;
+
 array[1..n_expressions, 1..Q, 1..S] of int: d_dfa;
 array[1..n_expressions, 1..Q, 1..S] of set of int: d_nfa;
 
-int: marker = tiles+1;
+int: marker = tiles + 1;
 set of int: Tiles = 1..tiles;
 set of int: TilesAndMarker = Tiles union {marker};
 
 array[1..size, 1..size] of var Tiles: board;
-array[int] of var TilesAndMarker: board_and_markers = [
-  if column <= size then board[row, column] else marker endif
-  | row in 1..size, column in 1..size+1
-];
+
+array[int] of var TilesAndMarker: board_and_markers =
+    [ board[r,c] | r in 1..size, c in 1..size ] ++
+    [ marker | r in 1..size ];
+
 
 constraint forall (e in 1..n_expressions) (
     if mode = 0 then
         regular(
             board_and_markers,
-            Q, S,
-            array2d(1..Q, 1..S, [d_dfa[e, q, s] | q in 1..Q, s in 1..S]),
+            Q,
+            S,
+            d_dfa[e, 1..Q, 1..S],
             q0[e],
             F[e]
         )
     else
         regular_nfa(
             board_and_markers,
-            Q, S,
-            array2d(1..Q, 1..S, [d_nfa[e, q, s] | q in 1..Q, s in 1..S]),
+            Q,
+            S,
+            d_nfa[e, 1..Q, 1..S],
             q0[e],
             F[e]
         )
@@ -60,6 +64,20 @@ constraint forall (e in 1..n_expressions) (
 
 solve :: int_search(board, input_order, indomain_min, complete) satisfy;
 
+array[1..26] of string: alphabet = [
+  "A","B","C","D","E","F","G","H","I","J","K","L","M",
+  "N","O","P","Q","R","S","T","U","V","W","X","Y","Z"
+];
+
 output [
-   "board = \n", show2d(board), ";\n"
+  "Pentominoes Solution:\n"
+] ++
+[
+  alphabet[fix(board[r,c])] ++
+  if c = size then "\n" else " " endif
+  | r in 1..size, c in 1..size
+] ++
+[
+  "\nSummary: Used ", show(tiles), " tiles on a ",
+  show(size), "x", show(size), " board.\n"
 ];

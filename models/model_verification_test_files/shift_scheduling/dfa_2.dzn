@@ -1,0 +1,30 @@
+%
+% Test: shift_scheduling / DFA #2
+%
+% Language: sequences of length 4 over {Work=1, Rest=2} that end with Rest.
+%
+% Automaton (DFA, Q=2, S=2):
+%   q0 = 1, F = {2}
+%   q1 = "last symbol was Work (or start)"
+%   q2 = "last symbol was Rest"
+%   Transitions:
+%     q1 + Work(1) -> q1
+%     q1 + Rest(2) -> q2
+%     q2 + Work(1) -> q1
+%     q2 + Rest(2) -> q2
+%
+
+sequence_length = 4;
+mode = 0;
+Q = 2;
+S = 2;
+q0 = 1;
+F = {2};
+d_dfa = array2d(1..2, 1..2, [
+    1, 2,
+    1, 2,
+]);
+d_nfa = array2d(1..2, 1..2, [
+    {}, {},
+    {}, {},
+]);

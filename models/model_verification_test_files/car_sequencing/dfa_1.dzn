@@ -1,0 +1,33 @@
+%
+% Test: car_sequencing / DFA #1
+%
+% Setup: 4 cars, 1 option, alphabet {skip=1, install=2}.
+% Capacity rule: at most 1 install in any 2 consecutive cars (i.e. no two
+% installs in a row).
+%
+% Automaton (DFA per option, Q=2, S=2):
+%   q0 = 1, F = {1, 2}
+%   q1 = "previous step was skip (or start)"
+%   q2 = "previous step was install"
+%   Transitions:
+%     q1 + skip(1)    -> q1
+%     q1 + install(2) -> q2
+%     q2 + skip(1)    -> q1
+%     q2 + install(2) -> 0  (dead - violates capacity)
+%
+
+n_cars = 4;
+n_options = 1;
+mode = 0;
+Q = 2;
+S = 2;
+q0 = [1];
+F = [{1, 2}];
+d_dfa = array3d(1..1, 1..2, 1..2, [
+    1, 2,
+    1, 0,
+]);
+d_nfa = array3d(1..1, 1..2, 1..2, [
+    {}, {},
+    {}, {},
+]);

@@ -1,0 +1,56 @@
+%
+% Test: nonogram / DFA #2
+%
+% Setup: 2x2 grid, alphabet {empty=1, filled=2}.
+% Rule (every row and every column): at least one filled cell.
+%
+% Automaton (DFA, Q=2, S=2; same DFA used for every row and every column):
+%   q0 = 1, F = {2}
+%   q1 = "no filled cells yet"
+%   q2 = "at least one filled cell (sink, accepting)"
+%   Transitions:
+%     q1 + empty(1)  -> q1
+%     q1 + filled(2) -> q2
+%     q2 + empty(1)  -> q2
+%     q2 + filled(2) -> q2
+%
+
+width = 2;
+height = 2;
+mode = 0;
+Q = 2;
+S = 2;
+
+row_q0 = [1, 1];
+row_F  = [{2}, {2}];
+row_d_dfa = array3d(1..2, 1..2, 1..2, [
+    %% row 1
+    1, 2,
+    2, 2,
+    %% row 2
+    1, 2,
+    2, 2,
+]);
+row_d_nfa = array3d(1..2, 1..2, 1..2, [
+    {}, {},
+    {}, {},
+    {}, {},
+    {}, {},
+]);
+
+col_q0 = [1, 1];
+col_F  = [{2}, {2}];
+col_d_dfa = array3d(1..2, 1..2, 1..2, [
+    %% col 1
+    1, 2,
+    2, 2,
+    %% col 2
+    1, 2,
+    2, 2,
+]);
+col_d_nfa = array3d(1..2, 1..2, 1..2, [
+    {}, {},
+    {}, {},
+    {}, {},
+    {}, {},
+]);

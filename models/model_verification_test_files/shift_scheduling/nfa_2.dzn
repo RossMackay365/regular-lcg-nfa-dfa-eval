@@ -1,0 +1,30 @@
+%
+% Test: shift_scheduling / NFA #2
+%
+% Language: sequences of length 3 over {Day=1, Night=2} that end with Night.
+%
+% Automaton (NFA, Q=2, S=2):
+%   q0 = 1, F = {2}
+%   q1 = "haven't committed to ending"
+%   q2 = "just saw Night as final symbol"
+%   Transitions:
+%     q1 + Day(1)   -> {1}
+%     q1 + Night(2) -> {1, 2}
+%     q2 + Day(1)   -> {}
+%     q2 + Night(2) -> {}
+%
+
+sequence_length = 3;
+mode = 1;
+Q = 2;
+S = 2;
+q0 = 1;
+F = {2};
+d_dfa = array2d(1..2, 1..2, [
+    0, 0,
+    0, 0,
+]);
+d_nfa = array2d(1..2, 1..2, [
+    {1},    {1, 2},
+    {},     {},
+]);

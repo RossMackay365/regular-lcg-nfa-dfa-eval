@@ -1,0 +1,48 @@
+%
+% Test: car_sequencing / NFA #2
+%
+% Setup: 3 cars, 2 options, alphabet {skip=1, install=2}.
+% Per-option rules:
+%   option 1: must be installed at least once  (NFA "contains install")
+%   option 2: must end with an install         (NFA "ends with install")
+%
+% Both automata have Q=2, so no padding is needed.
+%
+% Option 1 NFA ("contains install"):
+%   q0[1] = 1, F[1] = {2}
+%   q1 + skip(1)    -> {1}
+%   q1 + install(2) -> {1, 2}
+%   q2 + skip(1)    -> {2}
+%   q2 + install(2) -> {2}
+%
+% Option 2 NFA ("ends with install"):
+%   q0[2] = 1, F[2] = {2}
+%   q1 + skip(1)    -> {1}
+%   q1 + install(2) -> {1, 2}
+%   q2 + skip(1)    -> {}
+%   q2 + install(2) -> {}
+%
+
+n_cars = 3;
+n_options = 2;
+mode = 1;
+Q = 2;
+S = 2;
+q0 = [1, 1];
+F = [{2}, {2}];
+d_dfa = array3d(1..2, 1..2, 1..2, [
+    %% option 1
+    0, 0,
+    0, 0,
+    %% option 2
+    0, 0,
+    0, 0,
+]);
+d_nfa = array3d(1..2, 1..2, 1..2, [
+    %% option 1: "contains install"
+    {1},    {1, 2},
+    {2},    {2},
+    %% option 2: "ends with install"
+    {1},    {1, 2},
+    {},     {},
+]);

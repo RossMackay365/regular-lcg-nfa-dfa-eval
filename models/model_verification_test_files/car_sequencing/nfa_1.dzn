@@ -1,0 +1,32 @@
+%
+% Test: car_sequencing / NFA #1
+%
+% Setup: 3 cars, 1 option, alphabet {skip=1, install=2}.
+% Rule: the option must be installed at least once in the sequence.
+%
+% Automaton (NFA, Q=2, S=2):
+%   q0 = [1], F = [{2}]
+%   q1 = "no install seen yet"
+%   q2 = "install seen (sink, accepting)"
+%   Transitions:
+%     q1 + skip(1)    -> {1}
+%     q1 + install(2) -> {1, 2}
+%     q2 + skip(1)    -> {2}
+%     q2 + install(2) -> {2}
+%
+
+n_cars = 3;
+n_options = 1;
+mode = 1;
+Q = 2;
+S = 2;
+q0 = [1];
+F = [{2}];
+d_dfa = array3d(1..1, 1..2, 1..2, [
+    0, 0,
+    0, 0,
+]);
+d_nfa = array3d(1..1, 1..2, 1..2, [
+    {1},    {1, 2},
+    {2},    {2},
+]);

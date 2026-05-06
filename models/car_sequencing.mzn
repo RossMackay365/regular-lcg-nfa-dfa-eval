@@ -56,5 +56,13 @@ constraint forall (p in options) (
 solve satisfy;
 
 output [
-  "use = ", show(use)
+  "Car sequencing result:\n",
+  "Rows = cars, Columns = options\n\n"
+] 
+++
+[
+  "Car " ++ show(s) ++ ": " ++
+  concat([ show(use[s,p]) ++ if p < n_options then " " else "" endif
+         | p in options ]) ++ "\n"
+  | s in steps
 ];
