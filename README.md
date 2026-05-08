@@ -8,7 +8,7 @@ This repository is the reproducibility package for Ross Mackay's thesis "NFA vs 
 
 There are four stages used to produce and test problem instances against NFA, DFA and decomposition-based propagators. The stages are outlined below, and any stage can be rerun in isolation to ensure reproducibility.
 
-* **Stage 1 — `generate_candidates.py`**. Reads parameter sweeps from each `scripts/generators/{problem_type}.py`, builds the per-instance NFA(s) and minimal DFA(s) via `scripts/automata_helper.py`, records blowup ratio and cyclic/acyclic flag, writes one JSON per candidate to `candidate_instances/{problem_type}/`.
+* **Stage 1 — `generate_candidates.py`**. Calls the respective generators for each problem type from `scripts/generators/{problem_type}.py`, which generate the instances, building the per-instance NFA(s) and minimal DFA(s) via `scripts/automata_construction.py`, records blowup ratio and cyclic/acyclic flag, and writes one JSON per candidate to `candidate_instances/{problem_type}/`.
 * **Stage 2 — `select_instances.py`**. Reads `candidate_instances/`, runs `scripts/classify.py` to compute the difficulty axis, applies bin thresholds, samples five candidates per (blowup, structure, difficulty) cell under the master seed, writes the chosen instances to `instances_json/{blowup}/`.
 * **Stage 3 — `generate_dzn.py`**. Reads each selected `instances_json/{blowup}/{name}.json` and emits two `.dzn` files: `instances_dzn/nfa/{blowup}/{name}.dzn` (NFA transition tables) and `instances_dzn/dfa/{blowup}/{name}.dzn` (minimal DFA transition tables). Both share the same problem parameters, only the automata representation differs.
 * **Stage 4 — `run_experiments.py`**. For each selected instance, runs three configurations against `models/{problem_type}.mzn`: NFA propagator (NFA `.dzn`, `mode=1`), DFA propagator (DFA `.dzn`, `mode=0`), and solver decomposition (DFA `.dzn`, `mode=0`, with solver configured for decomposition). 60 instances × 3 configs = 180 runs.
@@ -26,9 +26,9 @@ Every `.mzn` in `models/` follows the same convention so a single `.dzn` schema 
   * `array[1..Q, 1..S] of int: d_dfa` (DFA — single next state)
   * `array[1..Q, 1..S] of set of int: d_nfa` (NFA — set of next states)
 
-For **single-constraint** problem types (`shift_scheduling`, `regex`) these are flat: one `q0`, one `F`, one 2D `d_dfa`, one 2D `d_nfa`.
+For **single-constraint** problem types (`regex`) these are flat: one `q0`, one `F`, one 2D `d_dfa`, one 2D `d_nfa`.
 
-For **multi-constraint** problem types (`nonograms`, `pentominoes`, `car_sequencing`) the K independent automata are packed in 3D arrays:
+For **multi-constraint** problem types (`nonograms`, `pentominoes`, `shift_scheduling`) the K independent automata are packed in 3D arrays:
 
 ```minizinc
 array[1..K] of int: q0;
@@ -43,15 +43,12 @@ Each `regular(...)` call uses the K-th automaton by slicing its 2D transition ta
 
 ### Problem Types
 
-Five problem types, all selected or restricted to be regular-dominated:
+Four problem types, all selected or restricted to be regular-dominated:
 
-* shift scheduling (individual rules only, no demand/staffing)
-* car sequencing (capacity-only)
-* nonograms (pure regular composition)
-* pentominoes (pure regular composition)
-* regex (single regular constraint)
-
-The regex problem type is a synthetic problem introduced to cover cells not reached by the four real-problem types.
+* shift scheduling (k-step rest day constraints)
+* nonograms
+* pentominoes 
+* regex
 
 ---
 
@@ -69,11 +66,11 @@ Importantly, the cell assignment is empirical. That means every candidate is bin
 
 |         | Low blowup       | Medium blowup                      | High blowup        |
 |---------|------------------|------------------------------------|--------------------|
-| Cyclic  | shift scheduling | shift scheduling, car sequencing   | pentominoes, regex |
-| Acyclic | nonograms, regex | regex                              | regex              |
+| Cyclic  | shift scheduling | shift scheduling, pentominoes      | pentominoes, regex |
+| Acyclic | nonograms, regex | nonograms, regex                   | regex              |
 
 
-For problem types with multiple regular constraints per instance (nonograms, pentominoes, car_sequencing), the per-instance blowup used for binning is `max_k(|DFA_k| / |NFA_k|)`. Per-constraint detail is preserved in the candidate `.json`.
+For problem types with multiple regular constraints per instance (shift_scheduling, nonograms, pentominoes), the per-instance blowup used for binning is `max_k(|DFA_k| / |NFA_k|)`. Per-constraint detail is preserved in the candidate `.json`.
 
 ---
 
