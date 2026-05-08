@@ -1,0 +1,143 @@
+"""
+Shift Scheduling Regex Generator
+
+Generates candidate instances for the shift-scheduling regular constraint
+benchmark. Each candidate contains one or more k-step shift recovery regexes over the
+alphabet {1=Day, 2=Night, 3=Evening, 4=Rest}.
+
+Problem Statement: somewhere in the schedule, a trigger shift T occurs, and exactly
+k days later there is a rest day (4). Generated instances always have k >= 4 to ensure blowup >= 1.
+
+Each instance contains 2-3 constraints with distinct (T, k) pairs,
+and blowup is summed across constraints.
+
+Per-constraint blowup reference (trigger=2 or 3, both identical):
+    k=4 -> NFA=27, DFA=33,  blowup=1.22x
+    k=5 -> NFA=27, DFA=96,  blowup=3.56x
+    k=6 -> NFA=35, DFA=129, blowup=3.69x
+"""
+
+import random
+import sys
+from pathlib import Path
+
+_ROOT = Path(__file__).resolve().parent.parent.parent
+if str(_ROOT) not in sys.path:
+    sys.path.insert(0, str(_ROOT))
+
+from scripts.automata_construction import construct_automata
+from generators.helper import (is_feasible, is_cyclic, serialize_automaton)
+
+# ---------------------------------------------------------------------------
+# Constants
+# ---------------------------------------------------------------------------
+PROBLEM_TYPE = "shift_scheduling"
+S = 4                       # 1=Day  2=Night  3=Evening  4=Rest
+ANY_CLASS = "(1|2|3|4)"     # Wildcard for Any Shift (FAdo doesn't accept [1-4])
+TRIGGER_SHIFTS = [2, 3]     # Night and Evening - Recovery Triggers
+K_VALUES = [4, 5, 6]
+
+
+# ---------------------------------------------------------------------------
+# Regex Builder
+# ---------------------------------------------------------------------------
+def _build_constraint(trigger, k):
+    """
+    Pattern: (1|2|3|4)* T (1|2|3|4)^k 4 (1|2|3|4)*
+    where T is the trigger shift and k is the recovery gap.
+    """
+    middle = " ".join([ANY_CLASS] * k)
+    return f"{ANY_CLASS}* {trigger} {middle} 4 {ANY_CLASS}*"
+
+# ---------------------------------------------------------------------------
+# Sampling Helper
+# ---------------------------------------------------------------------------
+# Relative probabilities for the number of constraints per instance.
+N_CONSTRAINTS_CHOICES = [2, 3]
+N_CONSTRAINTS_WEIGHTS = [2.0, 1.0]
+
+# Randomly Choose Sequence Length from 1 - 5 Weeks
+def _var_count(rng):
+    return rng.choice([7, 14, 21, 28, 35])
+
+
+# Sample Pair of Trigger and K, Excluding Already-Used Pairs
+def _sample_tk_pair(rng, exclude):
+    exclude = exclude or set()
+    available = [(t, k) for t in TRIGGER_SHIFTS for k in K_VALUES if (t, k) not in exclude]
+    return rng.choice(available)
+
+# Sample Problem Instance: Set of REgexes, Variable Count, and Params per Constraint
+def _sample_instance(rng):
+    n = rng.choices(N_CONSTRAINTS_CHOICES, weights=N_CONSTRAINTS_WEIGHTS, k=1)[0]
+    used = set()
+    regexes = []
+    params = []
+
+    for _ in range(n):
+        t, k = _sample_tk_pair(rng, exclude=used)
+        used.add((t, k))
+        regexes.append(_build_constraint(t, k))
+        params.append({"trigger": t, "k": k})
+    return regexes, _var_count(rng), params
+
+
+# ---------------------------------------------------------------------------
+# Main Generator - Returns Dictionary with Candidate Info and Automata
+# ---------------------------------------------------------------------------
+def generate_candidates(seed, target_count=100):
+    rng = random.Random(seed)
+    candidates = []
+    seen = set()
+    counter = 0
+
+    # Repeats Up to 30x Target Count to Ensure Sufficient Valid Candidates
+    for _ in range(target_count * 30):
+        if len(candidates) >= target_count:
+            break
+
+        regexes, var_count, constraint_params = _sample_instance(rng)
+
+        # Handle Duplicate Problems
+        key = frozenset(regexes)
+        if key in seen:
+            continue
+
+        # Build NFA/DFA Pair per Constraint
+        nfa_tuples, dfa_tuples = [], []
+        for regex in regexes:
+            nfa, dfa = construct_automata(regex)
+            nfa_tuples.append(nfa)
+            dfa_tuples.append(dfa)
+
+        # Reject UNSAT Automata's
+        if not all(is_feasible(dfa, var_count) for dfa in dfa_tuples):
+            continue
+
+        # Determine Blowup (Blowup Summed Across Constraints)
+        total_nfa = sum(nfa[0] for nfa in nfa_tuples)
+        total_dfa = sum(dfa[0] for dfa in dfa_tuples)
+        blowup = total_dfa / total_nfa if total_nfa > 0 else 1.0
+
+        # Determine Cyclicity (Cyclic if Any Constraint Cyclic)
+        cyclic = any(is_cyclic(dfa) for dfa in dfa_tuples)
+
+        seen.add(key)
+        candidates.append({
+            "problem_type": PROBLEM_TYPE,
+            "name":         f"shift_scheduling_{counter}",
+            "seed":         seed,
+            "params": {
+                "constraints":   constraint_params,
+                "var_count":     var_count,
+                "alphabet_size": S,
+            },
+            "alphabet_size": S,
+            "nfas":   [serialize_automaton(t) for t in nfa_tuples],
+            "dfas":   [serialize_automaton(t) for t in dfa_tuples],
+            "blowup": blowup,
+            "cyclic": cyclic,
+        })
+        counter += 1
+
+    return candidates

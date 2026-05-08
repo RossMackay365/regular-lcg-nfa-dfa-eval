@@ -48,20 +48,6 @@ def unwrap_singleton(s):
         return next(iter(s))
     return s
 
-## Regex to NFA (Glushkov Construction)
-def regex_to_nfa(regex_str):
-    regex = str2regexp(regex_str)
-    nfa = regex.nfaGlushkov()
-    save_diagram(nfa, "output", is_dfa=False)
-    return nfa
-
-## NFA to Minimal DFA
-def nfa_to_min_dfa(nfa):
-    dfa = nfa.toDFA()
-    min_dfa = dfa.minimal()
-    save_diagram(min_dfa, "output", is_dfa=True)
-    return min_dfa
-
 ## Map Library NFA Structure to MiniZinc Format
 def encode_nfa(nfa):
     ## State Length & Alphabet Length
@@ -106,6 +92,20 @@ def encode_dfa(dfa):
     return Q, S, d, q0, F
 
 
+## Regex to NFA (Glushkov Construction)
+def regex_to_nfa(regex_str):
+    regex = str2regexp(regex_str)
+    nfa = regex.nfaGlushkov()
+    # save_diagram(nfa, "output", is_dfa=False)
+    return nfa
+
+## NFA to Minimal DFA
+def nfa_to_min_dfa(nfa):
+    dfa = nfa.toDFA()
+    min_dfa = dfa.minimal()
+    # save_diagram(min_dfa, "output", is_dfa=True)
+    return min_dfa
+
 ## Automata Construction Pipeline
 def construct_automata(regex_str):
     nfa = regex_to_nfa(regex_str)
@@ -116,3 +116,24 @@ def construct_automata(regex_str):
     dfa_enc = encode_dfa(dfa)
 
     return nfa_enc, dfa_enc
+
+
+## Automata Construction Pipeline for Intersected Regex's
+def construct_automata_multi(regex_list):
+    nfa = regex_to_nfa(regex_list[0])
+    for r in regex_list[1:]:
+        nfa = nfa.conjunction(regex_to_nfa(r))
+
+    dfa = nfa_to_min_dfa(nfa)
+
+    nfa_enc = encode_nfa(nfa)
+    dfa_enc = encode_dfa(dfa)
+
+    return nfa_enc, dfa_enc
+
+
+if __name__ == "__main__":
+    regex = "(1|2|3|4)* 2 (1|2|3|4) (1|2|3|4) (1|2|3|4) (1|2|3|4) (1|2|3|4) (1|2|3|4) 4 (1|2|3|4)*"
+    nfa_enc, dfa_enc = construct_automata(regex)
+    print(nfa_enc[0])
+    print(dfa_enc[0])
