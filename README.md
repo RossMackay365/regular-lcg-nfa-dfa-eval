@@ -8,8 +8,8 @@ This repository is the reproducibility package for Ross Mackay's thesis "NFA vs 
 
 There are four stages used to produce and test problem instances against NFA, DFA and decomposition-based propagators. The stages are outlined below, and any stage can be rerun in isolation to ensure reproducibility.
 
-* **Stage 1 — `generate_candidates.py`**. Calls the respective generators for each problem type from `scripts/generators/{problem_type}.py`, which generate the instances, building the per-instance NFA(s) and minimal DFA(s) via `scripts/automata_construction.py`, records blowup ratio and cyclic/acyclic flag, and writes one JSON per candidate to `candidate_instances/{problem_type}/`.
-* **Stage 2 — `select_instances.py`**. Reads `candidate_instances/`, runs `scripts/classify.py` to compute the difficulty axis, applies bin thresholds, samples five candidates per (blowup, structure, difficulty) cell under the master seed, writes the chosen instances to `instances_json/{blowup}/`.
+* **Stage 1 — `generate_candidates.py`**. Calls the respective generators for each problem type from `scripts/generators/{problem_type}.py`, which generate the instances, building the per-instance NFA(s) and minimal DFA(s) via `scripts/automata_construction.py`, records the blowup ratio, and writes one JSON per candidate to `candidate_instances/{problem_type}/`.
+* **Stage 2 — `select_instances.py`**. Reads `candidate_instances/`, bins each candidate by its blowup ratio, and randomly samples 20 candidates per blowup bin under the master seed, writing the chosen instances to `instances_json/{blowup}/`.
 * **Stage 3 — `generate_dzn.py`**. Reads each selected `instances_json/{blowup}/{name}.json` and emits two `.dzn` files: `instances_dzn/nfa/{blowup}/{name}.dzn` (NFA transition tables) and `instances_dzn/dfa/{blowup}/{name}.dzn` (minimal DFA transition tables). Both share the same problem parameters, only the automata representation differs.
 * **Stage 4 — `run_experiments.py`**. For each selected instance, runs three configurations against `models/{problem_type}.mzn`: NFA propagator (NFA `.dzn`, `mode=1`), DFA propagator (DFA `.dzn`, `mode=0`), and solver decomposition (DFA `.dzn`, `mode=0`, with solver configured for decomposition). 60 instances × 3 configs = 180 runs.
 
@@ -47,28 +47,22 @@ Four problem types, all selected or restricted to be regular-dominated:
 
 * shift scheduling (k-step rest day constraints)
 * nonograms
-* pentominoes 
+* pentominoes
 * regex
 
 ---
 
 ### Experimental Matrix
 
-| Axis       | Values                                                                        |
-|------------|-------------------------------------------------------------------------------|
-| Blowup     | low (< 2x), medium (2 to 10x), high (> 10x), measured as DFA / NFA states     |
-| Structure  | cyclic or acyclic, by whether the minimal DFA has a non-self-loop cycle       |
-| Difficulty | easy or hard, assigned within each (blowup, structure) group                  |
+Instances are binned along a single axis: **blowup ratio**, measured as minimal DFA states divided by NFA states (Glushkov Construction).
 
-Five instances per cell, sampled under the master seed.
+| Bin    | Range      |
+|--------|------------|
+| Low    | < 2x       |
+| Medium | 2x to 10x  |
+| High   | > 10x      |
 
-Importantly, the cell assignment is empirical. That means every candidate is binned based on its measured blowup, structure, and difficulty, regardless of the problem type it was generated from. That being said, the problems expected to be found in each cell can be seen below:
-
-|         | Low blowup       | Medium blowup                      | High blowup        |
-|---------|------------------|------------------------------------|--------------------|
-| Cyclic  | shift scheduling | shift scheduling, pentominoes      | pentominoes, regex |
-| Acyclic | nonograms, regex | nonograms, regex                   | regex              |
-
+20 instances per bin, randomly sampled under the master seed, for 60 instances total. Bin assignment is empirical: every candidate is binned based on its measured blowup, regardless of the problem type it was generated from.
 
 For problem types with multiple regular constraints per instance (shift_scheduling, nonograms, pentominoes), the per-instance blowup used for binning is `max_k(|DFA_k| / |NFA_k|)`. Per-constraint detail is preserved in the candidate `.json`.
 
@@ -80,10 +74,10 @@ For problem types with multiple regular constraints per instance (shift_scheduli
 One model per problem type. Same model file is used for NFA, DFA, and decomposition runs. Only the data file and the `mode` parameter differ.
 
 **`candidate_instances/{problem_type}/{name}.json`**
-Stage 1 output. Full candidate pool, ~100 per problem type. Contains problem type parameters, NFA(s), minimal DFA(s), per-constraint and per-instance blowup ratios, cyclic/acyclic flag, generator seed. No bin labels and no difficulty measure (those are determined in stage 2).
+Stage 1 output. Full candidate pool. Contains problem type parameters, NFA(s), minimal DFA(s), per-constraint and per-instance blowup ratios, and generator seed.
 
 **`instances_json/{blowup}/{name}.json`**
-Stage 2 output. The 60 selected instances, named `{blowup}_{structure}_{difficulty}_{index}`. Candidate contents plus difficulty, assigned bin (blowup, structure, difficulty) and master-seed sample index. This acts as the source of truth for an instance, once it has been selected.
+Stage 2 output. The 60 selected instances, named `{blowup}_{index}`. Candidate contents plus the assigned blowup bin and master-seed sample index. This file is the source of truth for the problem, with both dzn files generated from it.
 
 **`instances_dzn/nfa/{blowup}/{name}.dzn`**
 Stage 3 output. Data file for the NFA-propagator run. Contains the NFA transition tables plus problem parameters and per-constraint `q0` / `F` arrays.
@@ -97,4 +91,4 @@ Blowup directories are numbered for sort order: `0_low_blowup`, `1_medium_blowup
 
 ### Reproducibility
 
-A single master seed drives all randomised generation and sampling, and is recorded in every instance `.json`. Rerunning the pipeline from that seed reproduces the candidate pool, the selected 60, and the `.dzn` files exactly. Once stage 4 begins, neither the candidate pool nor the selection may change — if a cell is under-populated during selection, expand parameter ranges and rerun stages 1–2 *before* any run of `run_experiments.py`.
+A single master seed drives all randomised generation and sampling, and is recorded in every instance `.json`. Rerunning the pipeline from that seed reproduces the candidate pool, the selected 60, and the `.dzn` files exactly. This ensures full reproducibility of the entire experimental data set, and experimental results.

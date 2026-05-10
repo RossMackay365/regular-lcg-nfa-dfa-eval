@@ -26,7 +26,7 @@ if str(_ROOT) not in sys.path:
     sys.path.insert(0, str(_ROOT))
 
 from scripts.automata_construction import construct_automata
-from generators.helper import (is_feasible, is_cyclic, serialize_automaton)
+from scripts.generators.helper import (is_feasible, serialize_automaton, write_candidate)
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -67,7 +67,7 @@ def _sample_tk_pair(rng, exclude):
     available = [(t, k) for t in TRIGGER_SHIFTS for k in K_VALUES if (t, k) not in exclude]
     return rng.choice(available)
 
-# Sample Problem Instance: Set of REgexes, Variable Count, and Params per Constraint
+# Sample Problem Instance: Set of Regexes, Variable Count, and Params Info
 def _sample_instance(rng):
     n = rng.choices(N_CONSTRAINTS_CHOICES, weights=N_CONSTRAINTS_WEIGHTS, k=1)[0]
     used = set()
@@ -87,13 +87,12 @@ def _sample_instance(rng):
 # ---------------------------------------------------------------------------
 def generate_candidates(seed, target_count=100):
     rng = random.Random(seed)
-    candidates = []
     seen = set()
     counter = 0
 
     # Repeats Up to 30x Target Count to Ensure Sufficient Valid Candidates
     for _ in range(target_count * 30):
-        if len(candidates) >= target_count:
+        if counter >= target_count:
             break
 
         regexes, var_count, constraint_params = _sample_instance(rng)
@@ -117,13 +116,10 @@ def generate_candidates(seed, target_count=100):
         # Determine Blowup (Blowup Summed Across Constraints)
         total_nfa = sum(nfa[0] for nfa in nfa_tuples)
         total_dfa = sum(dfa[0] for dfa in dfa_tuples)
-        blowup = total_dfa / total_nfa if total_nfa > 0 else 1.0
-
-        # Determine Cyclicity (Cyclic if Any Constraint Cyclic)
-        cyclic = any(is_cyclic(dfa) for dfa in dfa_tuples)
+        blowup = total_dfa / total_nfa
 
         seen.add(key)
-        candidates.append({
+        write_candidate({
             "problem_type": PROBLEM_TYPE,
             "name":         f"shift_scheduling_{counter}",
             "seed":         seed,
@@ -136,8 +132,6 @@ def generate_candidates(seed, target_count=100):
             "nfas":   [serialize_automaton(t) for t in nfa_tuples],
             "dfas":   [serialize_automaton(t) for t in dfa_tuples],
             "blowup": blowup,
-            "cyclic": cyclic,
         })
         counter += 1
-
-    return candidates
+        print("Generated instance: " + str(counter) + " with blowup: " + str(blowup))

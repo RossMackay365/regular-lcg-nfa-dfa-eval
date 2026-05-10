@@ -20,22 +20,39 @@ set of int: Positions = 1..sequence_length;
 
 int: mode; % 0 = DFA, 1 = NFA
 
+int: n_constraints;
 int: Q;
 int: S;
-int: q0;
-set of int: F;
 
-array[1..Q, 1..S] of int: d_dfa;
-array[1..Q, 1..S] of set of int: d_nfa;
+array[1..n_constraints] of int: q0;
+array[1..n_constraints] of set of int: F;
+
+array[1..n_constraints, 1..Q, 1..S] of int: d_dfa;
+array[1..n_constraints, 1..Q, 1..S] of set of int: d_nfa;
 
 array[Positions] of var 1..S: schedule;
 
-constraint
+constraint forall (c in 1..n_constraints) (
     if mode = 0 then
-        regular(schedule, Q, S, d_dfa, q0, F)
+        regular(
+            schedule,
+            Q,
+            S,
+            d_dfa[c, 1..Q, 1..S],
+            q0[c],
+            F[c]
+        )
     else
-        regular_nfa(schedule, Q, S, d_nfa, q0, F)
-    endif;
+        regular_nfa(
+            schedule,
+            Q,
+            S,
+            d_nfa[c, 1..Q, 1..S],
+            q0[c],
+            F[c]
+        )
+    endif
+);
 
 solve :: int_search(schedule, input_order, indomain_min) satisfy;
 

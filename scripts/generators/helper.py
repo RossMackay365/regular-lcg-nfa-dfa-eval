@@ -1,7 +1,16 @@
+import json
+from pathlib import Path
+
+
+# ---------------------------------------------------------------------------
+# Output Location
+# ---------------------------------------------------------------------------
+OUTPUT_ROOT = Path(__file__).resolve().parent.parent.parent / "candidate_instances"
+
+
 # ---------------------------------------------------------------------------
 # Serialisation
 # ---------------------------------------------------------------------------
-
 def _make_serialisable(obj):
     # Recursively Convert Sets, Tuples, Keys into JSON-Serialisable Form
     if isinstance(obj, (set, frozenset)):
@@ -57,43 +66,51 @@ def is_feasible(dfa_tuple, var_count):
 
 
 # ---------------------------------------------------------------------------
-# Cyclic Check
+# JSON Formatting
 # ---------------------------------------------------------------------------
+_PRIMITIVE = (int, float, str, bool, type(None))
 
-# Build Adjacency List from Transition Function
-def build_adj(Q, d):
-    adj = {q: set() for q in Q}
 
-    for q in Q:
-        if q in d:
-            for _, nxt in d[q].items():
-                
-                if nxt != q:
-                    adj[q].add(nxt)
+def _is_primitive_list(v):
+    return isinstance(v, list) and all(isinstance(e, _PRIMITIVE) for e in v)
 
-    return adj
 
-# DFS to Detect Cycles in DFA
-def dfs(node, adj, color):
-    # color: 0 = unvisited, 1 = visiting, 2 = visited
-    color[node] = 1
+def _dump_candidate(data):
+    placeholders = {}
 
-    for nei in adj[node]:
-        if color[nei] == 1:
-            # Cycle Detected
-            return True 
-        if color[nei] == 0:
-            if dfs(nei, adj, color):
-                return True
+    def compact(obj):
+        token = f"__COMPACT_{len(placeholders)}__"
+        placeholders[token] = json.dumps(obj, separators=(",", ":"))
+        return token
 
-    color[node] = 2
-    return False
+    def walk(obj):
+        if isinstance(obj, dict):
+            return {k: walk(v) for k, v in obj.items()}
+        if isinstance(obj, list):
+            if not obj:
+                return []
+            if all(isinstance(e, _PRIMITIVE) for e in obj):
+                return compact(obj)
+            if all(_is_primitive_list(e) for e in obj):
+                return compact(obj)
+            return [walk(v) for v in obj]
+        return obj
 
-# Check for Loops in DFA (Self-Loops Excluded)
-def is_cyclic(dfa_tuple):
-    Q, _, d, q0, _ = dfa_tuple
+    text = json.dumps(walk(data), indent=2)
+    for token, c in placeholders.items():
+        text = text.replace(f'"{token}"', c)
+    return text
 
-    adj = build_adj(Q, d)
-    color = {q: 0 for q in Q}
 
-    return dfs(q0, adj, color)
+# ---------------------------------------------------------------------------
+# File Writing
+# ---------------------------------------------------------------------------
+def write_candidate(candidate):
+    problem_dir = OUTPUT_ROOT / candidate["problem_type"]
+    problem_dir.mkdir(parents=True, exist_ok=True)
+    path = problem_dir / f"{candidate['name']}.json"
+    if path.exists():
+        return False
+    with path.open("w") as f:
+        f.write(_dump_candidate(candidate))
+    return True
