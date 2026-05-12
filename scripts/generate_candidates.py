@@ -1,3 +1,4 @@
+import argparse
 import sys
 from pathlib import Path
 
@@ -9,7 +10,7 @@ from generators import shift_scheduling, regex
 
 
 MASTER_SEED = 42
-TARGET_PER_PROBLEM = 100
+MAX_TARGET_PER_PROBLEM = 100
 
 GENERATORS = [
     shift_scheduling,
@@ -17,11 +18,15 @@ GENERATORS = [
 ]
 
 
-def main():
+def main(seed=MASTER_SEED, target_count=MAX_TARGET_PER_PROBLEM):
     for gen in GENERATORS:
         print(f"Generating {gen.PROBLEM_TYPE}...")
-        gen.generate_candidates(seed=MASTER_SEED, target_count=TARGET_PER_PROBLEM)
+        gen.generate_candidates(seed=seed, target_count=target_count)
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description="Generate candidate instances across all problem types.")
+    parser.add_argument("--seed", type=int, default=MASTER_SEED, help=f"Master RNG seed (default: {MASTER_SEED})")
+    parser.add_argument("--target-count", type=int, default=MAX_TARGET_PER_PROBLEM, help=f"Target candidates per problem type (default: {MAX_TARGET_PER_PROBLEM})")
+    args = parser.parse_args()
+    main(seed=args.seed, target_count=args.target_count)

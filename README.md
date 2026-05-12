@@ -92,3 +92,5 @@ Blowup directories are numbered for sort order: `0_low_blowup`, `1_medium_blowup
 ### Reproducibility
 
 A single master seed drives all randomised generation and sampling, and is recorded in every instance `.json`. Rerunning the pipeline from that seed reproduces the candidate pool, the selected 60, and the `.dzn` files exactly. This ensures full reproducibility of the entire experimental data set, and experimental results.
+
+Stage 1 scripts (`generate_candidates.py` and each `scripts/generators/{problem_type}.py`) accept `--seed` and `--target-count` CLI flags so an alternate seed or candidate-pool size can be run without modifying the code. Defaults match the recorded master seed (42) and the standard maximum per-problem target (100).

@@ -11,12 +11,10 @@ k days later there is a rest day (4). Generated instances always have k >= 4 to 
 Each instance contains 2-3 constraints with distinct (T, k) pairs,
 and blowup is summed across constraints.
 
-Per-constraint blowup reference (trigger=2 or 3, both identical):
-    k=4 -> NFA=27, DFA=33,  blowup=1.22x
-    k=5 -> NFA=27, DFA=96,  blowup=3.56x
-    k=6 -> NFA=35, DFA=129, blowup=3.69x
+CLI: python shift_scheduling.py [--seed 42] [--target-count 100]
 """
 
+import argparse
 import random
 import sys
 from pathlib import Path
@@ -135,3 +133,10 @@ def generate_candidates(seed, target_count=100):
         })
         counter += 1
         print("Generated instance: " + str(counter) + " with blowup: " + str(blowup))
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Generate shift-scheduling candidate instances.")
+    parser.add_argument("--seed", type=int, default=42, help="Master RNG seed (default: 42)")
+    parser.add_argument("--target-count", type=int, default=100, help="Target number of candidates to generate (default: 100)")
+    args = parser.parse_args()
+    generate_candidates(seed=args.seed, target_count=args.target_count)
