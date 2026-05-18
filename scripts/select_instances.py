@@ -95,4 +95,4 @@ if __name__ == "__main__":
 
     bins = load_and_bin()
     print_bins(bins)
-    # sample_and_write(bins, seed=args.seed, samples_per_bin=args.samples_per_bin)
+    sample_and_write(bins, seed=args.seed, samples_per_bin=args.samples_per_bin)
