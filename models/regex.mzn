@@ -2,8 +2,7 @@
 % Regex Model
 %
 % A synthetic problem where a sequence of variables over a fixed alphabet
-% must spell a string accepted by a given regular expression; included to
-% populate experimental cells the four real-problem types do not reach.
+% must spell a string accepted by a given regular expression.
 %
 % Written by Ross Mackay, with reference to a model by Julius Gvozdiovas (2025):
 %   https://github.com/JulGvoz/nfa-propagator-explanations/blob/227196987c770e9fe682fd581ceed04f93b80b64/experiments/problems/regex/regex.mzn

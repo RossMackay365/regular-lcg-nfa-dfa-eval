@@ -106,34 +106,38 @@ def nfa_to_min_dfa(nfa):
     # save_diagram(min_dfa, "output", is_dfa=True)
     return min_dfa
 
+## Feasibility Check - BFS over NFA for var_count steps
+def is_feasible(nfa_tuple, var_count):
+    _, S_size, d, q0, F = nfa_tuple
+    accepting = set(F)
+    frontier  = {q0}
+    for _ in range(var_count):
+        next_frontier = set()
+        for state in frontier:
+            inner = d.get(state, {}) if isinstance(d, dict) else {}
+            for sym in range(1, S_size + 1):
+                dst = inner.get(sym, set()) if isinstance(inner, dict) else set()
+                next_frontier |= dst
+        frontier = next_frontier
+        if not frontier:
+            return False
+    return bool(frontier & accepting)
+
+
 ## Automata Construction Pipeline
-def construct_automata(regex_str):
-    nfa = regex_to_nfa(regex_str)
+def construct_automata(regex_list, var_count):
+    fado_nfas = [regex_to_nfa(r) for r in regex_list]
 
-    dfa = nfa_to_min_dfa(nfa)
+    # Intersect NFA's
+    intersected = fado_nfas[0]
+    for n in fado_nfas[1:]:
+        intersected = intersected.conjunction(n)
 
-    nfa_enc = encode_nfa(nfa)
-    dfa_enc = encode_dfa(dfa)
+    # Determine Feasibility - Before DFA Construction/Minimization
+    if not is_feasible(encode_nfa(intersected), var_count):
+        return None
 
-    return nfa_enc, dfa_enc
+    nfa_tuples = [encode_nfa(n) for n in fado_nfas]
+    dfa_tuples = [encode_dfa(nfa_to_min_dfa(n)) for n in fado_nfas]
 
-
-## Automata Construction Pipeline for Intersected Regex's
-def construct_automata_multi(regex_list):
-    nfa = regex_to_nfa(regex_list[0])
-    for r in regex_list[1:]:
-        nfa = nfa.conjunction(regex_to_nfa(r))
-
-    dfa = nfa_to_min_dfa(nfa)
-
-    nfa_enc = encode_nfa(nfa)
-    dfa_enc = encode_dfa(dfa)
-
-    return nfa_enc, dfa_enc
-
-
-if __name__ == "__main__":
-    regex = "(1|2|3|4)* 2 (1|2|3|4) (1|2|3|4) (1|2|3|4) (1|2|3|4) (1|2|3|4) (1|2|3|4) 4 (1|2|3|4)*"
-    nfa_enc, dfa_enc = construct_automata(regex)
-    print(nfa_enc[0])
-    print(dfa_enc[0])
+    return nfa_tuples, dfa_tuples

@@ -34,38 +34,6 @@ def serialize_automaton(automaton_tuple):
 
 
 # ---------------------------------------------------------------------------
-# Feasibility
-# ---------------------------------------------------------------------------
-
-# Takes Transition Step in DFA if Possible
-def _dfa_step(d, state, symbol):
-    inner = d.get(state) if isinstance(d, dict) else None
-    if inner is None:
-        return None
-    dst = inner.get(symbol) if isinstance(inner, dict) else None
-    if dst in (None, 0):
-        return None
-    return dst
-
-# BFS over DFA - Checks for Reachable Accepting State (and thus feasible solution)
-def is_feasible(dfa_tuple, var_count):
-    Q, S_size, d, q0, F = dfa_tuple
-    accepting = set(F)
-    frontier = {q0}
-    for _ in range(var_count):
-        next_frontier = set()
-        for state in frontier:
-            for sym in range(1, S_size + 1):
-                dst = _dfa_step(d, state, sym)
-                if dst is not None:
-                    next_frontier.add(dst)
-        frontier = next_frontier
-        if not frontier:
-            return False
-    return bool(frontier & accepting)
-
-
-# ---------------------------------------------------------------------------
 # JSON Formatting
 # ---------------------------------------------------------------------------
 _PRIMITIVE = (int, float, str, bool, type(None))

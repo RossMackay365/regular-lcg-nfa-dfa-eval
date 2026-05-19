@@ -121,10 +121,15 @@ def generate_candidates(seed, target_count=100):
             skip_counter += 1
             continue
 
-        # Build NFA/DFA
+        # Construct Automata (Automata Construction Skips UNSAT Instances)
         print("Attempting n: " + str(param["n"]) + ", k: " + str(param["k"]) + ", m: " + str(param["m"]) + ", anchor: " + str(param["anchor"]))
         print("Skip Counter: " + str(skip_counter))
-        nfa, dfa = construct_automata(regex)
+        result = construct_automata([regex], var_count)
+        if result is None:
+            skip_counter += 1
+            continue
+        nfa_tuples, dfa_tuples = result
+        nfa, dfa = nfa_tuples[0], dfa_tuples[0]
 
         # Determine Blowup
         blowup = dfa[0] / nfa[0]

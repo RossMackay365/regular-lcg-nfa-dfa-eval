@@ -24,7 +24,7 @@ if str(_ROOT) not in sys.path:
     sys.path.insert(0, str(_ROOT))
 
 from scripts.automata_construction import construct_automata
-from scripts.generators.helper import (is_feasible, serialize_automaton, write_candidate)
+from scripts.generators.helper import (serialize_automaton, write_candidate)
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -100,16 +100,11 @@ def generate_candidates(seed, target_count=100):
         if key in seen:
             continue
 
-        # Build NFA/DFA Pair per Constraint
-        nfa_tuples, dfa_tuples = [], []
-        for regex in regexes:
-            nfa, dfa = construct_automata(regex)
-            nfa_tuples.append(nfa)
-            dfa_tuples.append(dfa)
-
-        # Reject UNSAT Automata's
-        if not all(is_feasible(dfa, var_count) for dfa in dfa_tuples):
+        # Construct Automata (Automata Construction Skips UNSAT Instances)
+        result = construct_automata(regexes, var_count)
+        if result is None:
             continue
+        nfa_tuples, dfa_tuples = result
 
         # Determine Blowup (Blowup Summed Across Constraints)
         total_nfa = sum(nfa[0] for nfa in nfa_tuples)

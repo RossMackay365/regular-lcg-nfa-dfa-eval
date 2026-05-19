@@ -50,6 +50,7 @@ CSV_STAT_COLUMNS = [
     "nodes",
     "failures",
     "restarts",
+    "propagations",
     "nogoods",
     "AverageLearnedNogoodLength",
     "AverageLbd",
