@@ -91,10 +91,10 @@ Blowup directories are numbered for sort order: `0_low_blowup`, `1_medium_blowup
 
 ### Statistics
 
-Each run records nine solver statistics emitted by Pumpkin via MiniZinc's `--json-stream` output. They group into three categories tracking different aspects of solver behaviour:
+Each run records ten solver statistics emitted by Pumpkin via MiniZinc's `--json-stream` output. They group into three categories tracking different aspects of solver behaviour:
 
 * **Overall performance.** `solveTime` (seconds inside the solver), `flatTime` (seconds spent flattening the MiniZinc model to FlatZinc), and `nodes` (search tree size).
-* **Search and learning.** `failures` (conflicts encountered), `restarts` (times the solver discarded its current assignment and restarted from depth 0, keeping learned clauses), and `nogoods` (learned clauses generated from those conflicts).
+* **Search and learning.** `propagations` (domain updates performed by constraint propagators), `failures` (conflicts encountered), `restarts` (times the solver discarded its current assignment and restarted from depth 0, keeping learned clauses), and `nogoods` (learned clauses generated from those conflicts).
 * **Clause quality.** `AverageLearnedNogoodLength` (mean literal count of learned clauses), `AverageLbd` (mean Literal Block Distance — the standard CDCL clause-quality measure), and `AverageBacktrackAmount` (mean backtrack distance per failure).
 
 Each invocation of `run_experiments.py` writes into a fresh timestamped run directory `results/{YYYY-MM-DD_HH-MM-SS}/` so reruns never overwrite prior results. The per-instance JSON at `results/{YYYY-MM-DD_HH-MM-SS}/{blowup}/{name}.json` retains the full statistics dictionary alongside raw stdout/stderr, so additional metrics can be added to `results/{YYYY-MM-DD_HH-MM-SS}/summary.csv` without rerunning the experiments.
