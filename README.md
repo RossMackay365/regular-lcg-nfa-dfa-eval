@@ -61,7 +61,7 @@ Instances are binned along a single axis: **blowup ratio**, measured as minimal 
 | Medium | 2x to 10x  |
 | High   | > 10x      |
 
-Every generated instance is written into its bin folder as it is produced; no separate selection step exists. Because bin sizes are typically uneven across problem types, `run_experiments.py` draws a seeded random sub-sample of size `min(|bin|)` from each bin at run time so every bin contributes the same number of instances to the experiment. Bin assignment is empirical: every instance is binned based on its measured blowup, regardless of the problem type it was generated from.
+Because bin sizes are typically uneven across problem types, `run_experiments.py` draws a seeded random sub-sample of size `min(|bin|)` from each bin at run time so every bin contributes the same number of instances to the experiment. Bin assignment is empirical: every instance is binned based on its measured blowup, regardless of the problem type it was generated from.
 
 For problem types with multiple regular constraints per instance (shift_scheduling, nonograms, pentominoes), the per-instance blowup used for binning is aggregated across constraints (see each generator for its exact aggregation). Per-constraint detail is preserved in the instance `.json`.
 
@@ -99,6 +99,6 @@ Each invocation of `run_experiments.py` writes into a fresh timestamped run dire
 
 ### Reproducibility
 
-A single master seed drives all randomised generation and the run-time bin sub-sampling, and is recorded in every instance `.json`. Rerunning the pipeline from that seed reproduces the generated instances, the `.dzn` files, and the per-bin sub-sample chosen by `run_experiments.py` exactly. This ensures full reproducibility of the entire experimental data set, and experimental results.
+A single master seed drives all randomised generation and the run-time bin sampling, and is recorded in every instance `.json`. Rerunning the pipeline from that seed reproduces the generated instances, the `.dzn` files, and the per-bin sample chosen by `run_experiments.py` exactly. This ensures full reproducibility of the entire experimental data set, and experimental results.
 
 Stage 1 scripts (`generate_candidates.py` and each `scripts/generators/{problem_type}.py`) accept `--seed` and `--target-count` CLI flags so an alternate seed or candidate-pool size can be run without modifying the code. Defaults match the recorded master seed (42) and the standard maximum per-problem target (100).
