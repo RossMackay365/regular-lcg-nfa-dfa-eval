@@ -1,5 +1,6 @@
 from FAdo.reex import str2regexp
 import os
+import time
 
 ## Print Automaton Structure
 def print_automaton(name, automaton):
@@ -92,19 +93,6 @@ def encode_dfa(dfa):
     return Q, S, d, q0, F
 
 
-## Regex to NFA (Glushkov Construction, then Right-Bisimulation Reduction)
-def regex_to_nfa(regex_str):
-    regex = str2regexp(regex_str)
-    nfa = regex.nfaGlushkov()
-    return nfa.rEquivNFA()
-
-## NFA to Minimal DFA
-def nfa_to_min_dfa(nfa):
-    dfa = nfa.toDFA()
-    min_dfa = dfa.minimal()
-    # save_diagram(min_dfa, "output", is_dfa=True)
-    return min_dfa
-
 ## Feasibility Check - BFS over NFA for var_count steps
 def is_feasible(nfa_tuple, var_count):
     _, S_size, d, q0, F = nfa_tuple
@@ -123,20 +111,78 @@ def is_feasible(nfa_tuple, var_count):
     return bool(frontier & accepting)
 
 
+## Timed Automata Build (Single Regex)
+#
+# Performs Four Time-Measured Steps:
+#   1. Glushkov NFA construction (regex string -> NFA)
+#   2. Right-bisim NFA reduction (Glushkov NFA -> reduced NFA, stored)
+#   3. Subset construction         (Glushkov NFA -> un-minimised DFA)
+#   4. DFA minimisation            (un-min DFA  -> minimal DFA, stored)
+#
+# Subset construction runs on the raw Glushkov NFA, not the reduced one, 
+# so the NFA-side and DFA-side reduction strategies are cleanly separated
+# in the measurements.
+
+def build_automata_pair(regex_str, sigma_extra=None):
+    # Step 1: Glushkov NFA
+    t0 = time.perf_counter()
+    regex = str2regexp(regex_str)
+    nfa_g = regex.nfaGlushkov()
+    nfa_glushkov_ms = (time.perf_counter() - t0) * 1000.0
+
+    # Augment Alphabet If Needed (Ensures NFA's Share Alphabet for Nonograms/Pentominoes)
+    if sigma_extra:
+        for sym in sigma_extra:
+            nfa_g.Sigma.add(sym)
+
+    nfa_glushkov_states = len(nfa_g.States)
+
+    # Step 2: Right-Bisimulation NFA Reduction (stored NFA)
+    t0 = time.perf_counter()
+    nfa_r = nfa_g.rEquivNFA()
+    nfa_rbisim_ms = (time.perf_counter() - t0) * 1000.0
+    # Preserve augmented alphabet on the reduced NFA.
+    if sigma_extra:
+        for sym in sigma_extra:
+            nfa_r.Sigma.add(sym)
+    nfa_rbisim_states = len(nfa_r.States)
+
+    # Step 3: Subset Construction (unminimised DFA)
+    t0 = time.perf_counter()
+    dfa_u = nfa_g.toDFA()
+    dfa_subset_ms = (time.perf_counter() - t0) * 1000.0
+    dfa_subset_states = len(dfa_u.States)
+
+    # Step 4: DFA Minimisation (stored DFA)
+    t0 = time.perf_counter()
+    dfa_m = dfa_u.minimal()
+    dfa_min_ms = (time.perf_counter() - t0) * 1000.0
+    dfa_min_states = len(dfa_m.States)
+
+    metrics = {
+        "nfa_glushkov_ms":     nfa_glushkov_ms,
+        "nfa_glushkov_states": nfa_glushkov_states,
+        "nfa_rbisim_ms":       nfa_rbisim_ms,
+        "nfa_rbisim_states":   nfa_rbisim_states,
+        "dfa_subset_ms":       dfa_subset_ms,
+        "dfa_subset_states":   dfa_subset_states,
+        "dfa_min_ms":          dfa_min_ms,
+        "dfa_min_states":      dfa_min_states,
+    }
+
+    return encode_nfa(nfa_r), encode_dfa(dfa_m), metrics
+
+
 ## Automata Construction Pipeline
-def construct_automata(regex_list, var_count):
-    fado_nfas = [regex_to_nfa(r) for r in regex_list]
+def construct_automata(regex_list, sigma_extra=None, feasibility_var_counts=None):
+    builds = [build_automata_pair(r, sigma_extra=sigma_extra) for r in regex_list]
+    nfa_tuples = [b[0] for b in builds]
+    dfa_tuples = [b[1] for b in builds]
+    metrics    = [b[2] for b in builds]
 
-    # Intersect NFA's
-    intersected = fado_nfas[0]
-    for n in fado_nfas[1:]:
-        intersected = intersected.conjunction(n)
+    if feasibility_var_counts is not None:
+        for nfa_t, vc in zip(nfa_tuples, feasibility_var_counts):
+            if not is_feasible(nfa_t, vc):
+                return None
 
-    # Determine Feasibility - Before DFA Construction/Minimization
-    if not is_feasible(encode_nfa(intersected), var_count):
-        return None
-
-    nfa_tuples = [encode_nfa(n) for n in fado_nfas]
-    dfa_tuples = [encode_dfa(nfa_to_min_dfa(n)) for n in fado_nfas]
-
-    return nfa_tuples, dfa_tuples
+    return nfa_tuples, dfa_tuples, metrics

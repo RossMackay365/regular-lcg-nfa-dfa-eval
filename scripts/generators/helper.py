@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 from pathlib import Path
 
 
@@ -56,6 +57,28 @@ def serialize_automaton(automaton_tuple):
 
 
 # ---------------------------------------------------------------------------
+# Construction Metrics
+# ---------------------------------------------------------------------------
+CONSTRUCTION_STEPS = ("nfa_glushkov", "nfa_rbisim", "dfa_subset", "dfa_min")
+
+
+def assemble_metrics(per_constraint_metrics):
+    out = {}
+    for step in CONSTRUCTION_STEPS:
+        ms_key     = f"{step}_ms"
+        states_key = f"{step}_states"
+        ms_list     = [float(m[ms_key])     for m in per_constraint_metrics]
+        states_list = [int(m[states_key]) for m in per_constraint_metrics]
+        out[step] = {
+            "ms":           ms_list,
+            "ms_total":     float(sum(ms_list)),
+            "states":       states_list,
+            "states_total": int(sum(states_list)),
+        }
+    return out
+
+
+# ---------------------------------------------------------------------------
 # JSON Formatting
 # ---------------------------------------------------------------------------
 _PRIMITIVE = (int, float, str, bool, type(None))
@@ -65,7 +88,7 @@ def _is_primitive_list(v):
     return isinstance(v, list) and all(isinstance(e, _PRIMITIVE) for e in v)
 
 
-def _dump_candidate(data):
+def _dump_instance(data):
     placeholders = {}
 
     def compact(obj):
@@ -93,14 +116,40 @@ def _dump_candidate(data):
 
 
 # ---------------------------------------------------------------------------
+# Generator Progress Reporting
+# ---------------------------------------------------------------------------
+def print_generator_header(problem_type, target_count, seed):
+    print(f"=== Generating {problem_type} (target={target_count}, seed={seed}) ===")
+    print(f"Started at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print()
+
+
+def print_generator_progress(counter, target_count, name, params_str, blowup, elapsed_s):
+    print(
+        f"[{counter:>4}/{target_count}] {name}"
+        f"  {params_str}"
+        f"  blowup={blowup:.2f}"
+        f"  ({elapsed_s:.1f}s)"
+    )
+
+
+def print_generator_footer(counter, skip_counter, total_elapsed_s):
+    mins, secs = divmod(total_elapsed_s, 60)
+    print()
+    print(f"Finished at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print(f"Total time: {int(mins)}m {secs:.1f}s")
+    print(f"Done. {counter} instances generated, {skip_counter} skipped.")
+
+
+# ---------------------------------------------------------------------------
 # File Writing
 # ---------------------------------------------------------------------------
-def write_candidate(candidate):
-    bin_dir = OUTPUT_ROOT / bin_dir_for(candidate["blowup"])
+def write_instance(instance):
+    bin_dir = OUTPUT_ROOT / bin_dir_for(instance["blowup"])
     bin_dir.mkdir(parents=True, exist_ok=True)
-    path = bin_dir / f"{candidate['name']}.json"
+    path = bin_dir / f"{instance['name']}.json"
     if path.exists():
         return False
     with path.open("w") as f:
-        f.write(_dump_candidate(candidate))
+        f.write(_dump_instance(instance))
     return True

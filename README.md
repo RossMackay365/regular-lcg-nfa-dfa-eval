@@ -8,7 +8,7 @@ This repository is the reproducibility package for Ross Mackay's thesis "NFA vs 
 
 There are three stages used to produce and test problem instances against NFA, DFA and decomposition-based propagators. The stages are outlined below, and any stage can be rerun in isolation to ensure reproducibility.
 
-* **Stage 1 — `generate_candidates.py`**. Calls the respective generators for each problem type from `scripts/generators/{problem_type}.py`, which generate the instances, building the per-instance NFA(s) and minimal DFA(s) via `scripts/automata_construction.py`, records the blowup ratio, and writes one JSON per instance directly into the blowup-bin folder it belongs to: `instances_json/{blowup}/{name}.json`. Bins are assigned from the measured blowup ratio against the thresholds in `scripts/blowup_bins.py`.
+* **Stage 1 — `generate_instances.py`**. Calls the respective generators for each problem type from `scripts/generators/{problem_type}.py`, which generate the instances, building the per-instance NFA(s) and minimal DFA(s) via `scripts/automata_construction.py`, records the blowup ratio, and writes one JSON per instance directly into the blowup-bin folder it belongs to: `instances_json/{blowup}/{name}.json`. Bins are assigned from the measured blowup ratio against the thresholds in `scripts/blowup_bins.py`.
 * **Stage 2 — `generate_dzn.py`**. Reads each `instances_json/{blowup}/{name}.json` and emits two `.dzn` files: `instances_dzn/nfa/{blowup}/{name}.dzn` (NFA transition tables) and `instances_dzn/dfa/{blowup}/{name}.dzn` (minimal DFA transition tables). Both share the same problem parameters, only the automata representation differs.
 * **Stage 3 — `run_experiments.py`**. Sub-samples each blowup bin down to `min(|bin|)` instances using a seeded random draw so every bin contributes the same number of instances. For each selected instance, runs three configurations against `models/{problem_type}.mzn`: NFA propagator (NFA `.dzn`, `mode=1`), DFA propagator (DFA `.dzn`, `mode=0`), and solver decomposition (DFA `.dzn`, `mode=0`, with solver configured for decomposition).
 
@@ -64,9 +64,22 @@ Because bin sizes are typically uneven across problem types, `run_experiments.py
 
 For problem types with multiple regular constraints per instance (nonograms, polyominoes), the per-instance blowup used for binning is aggregated across constraints (see each generator for its exact aggregation). Per-constraint detail is preserved in the instance `.json`.
 
-#### NFA construction
+#### NFA Construction
 
 The denominator uses a Glushkov NFA reduced with right-bisimulation reduction (rEquivNFA in FAdo). This preserves the language, runs in polynomial time, and keeps the automaton nondeterministic. Raw Glushkov NFAs contain structural redundancy that a minimal DFA removes, so comparing against them can underestimate determinisation cost. Computing the true minimum NFA is PSPACE-complete, so bisimulation reduction is a practical approximation: it compares the smallest NFA we can efficiently build with the minimal DFA.
+
+#### Construction-Cost Metrics
+
+Each instance records the wall-clock cost and resulting state count of the four automata pipeline steps, captured at generation time with `time.perf_counter()` and stored in the instance `.json` under `construction`. The four steps are:
+
+| Step | Operation | FAdo call |
+|---|---|---|
+| `nfa_glushkov` | regex → Glushkov NFA | `str2regexp(...).nfaGlushkov()` |
+| `nfa_rbisim` | Glushkov NFA → reduced NFA *(stored)* | `nfa.rEquivNFA()` |
+| `dfa_subset` | Glushkov NFA → un-minimised DFA | `nfa.toDFA()` |
+| `dfa_min` | un-min DFA → minimal DFA *(stored)* | `dfa.minimal()` |
+
+For multi-constraint instances (nonograms, polyominoes), each block stores a per-constraint list and the aggregate sum. `summary.csv` surfaces the aggregate `ms_total` and `states_total` for each step as eight extra columns (`nfa_glushkov_ms`, `nfa_glushkov_states`, …). The construction cost is a per-instance property, so the same value repeats across the three config rows for one instance.
 
 ---
 
@@ -104,4 +117,4 @@ Each invocation of `run_experiments.py` writes into a fresh timestamped run dire
 
 A single master seed drives all randomised generation and the run-time bin sampling, and is recorded in every instance `.json`. Rerunning the pipeline from that seed reproduces the generated instances, the `.dzn` files, and the per-bin sample chosen by `run_experiments.py` exactly. This ensures full reproducibility of the entire experimental data set, and experimental results.
 
-Stage 1 scripts (`generate_candidates.py` and each `scripts/generators/{problem_type}.py`) accept `--seed` and `--target-count` CLI flags so an alternate seed or candidate-pool size can be run without modifying the code. Defaults match the recorded master seed (71) and the standard maximum per-problem target (100).
+Stage 1 scripts (`generate_instances.py` and each `scripts/generators/{problem_type}.py`) accept `--seed` and `--target-count` CLI flags so an alternate seed or instance-pool size can be run without modifying the code. Defaults match the recorded master seed (71) and the standard maximum per-problem target (100).

@@ -1,8 +1,8 @@
 """
 Nonogram Instance Generator
 
-Generates candidate instances for the nonogram regular constraint benchmark.
-Each candidate is a (width x height) grid puzzle whose row and column hints
+Generates instances for the nonogram regular constraint benchmark.
+Each instance is a (width x height) grid puzzle whose row and column hints
 each become a regular constraint over the alphabet {1=empty, 2=filled}.
 
 CLI: python nonogram.py [--seed 71] [--target-count 100]
@@ -14,16 +14,22 @@ Written by Ross Mackay, with reference to a generator by Julius Gvozdiovas (2025
 import argparse
 import random
 import sys
+import time
 from pathlib import Path
 
 _ROOT = Path(__file__).resolve().parent.parent.parent
 if str(_ROOT) not in sys.path:
     sys.path.insert(0, str(_ROOT))
 
-from scripts.automata_construction import (
-    regex_to_nfa, nfa_to_min_dfa, encode_nfa, encode_dfa,
+from scripts.automata_construction import construct_automata
+from scripts.generators.helper import (
+    assemble_metrics,
+    print_generator_footer,
+    print_generator_header,
+    print_generator_progress,
+    serialize_automaton,
+    write_instance,
 )
-from scripts.generators.helper import serialize_automaton, write_candidate
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -75,25 +81,18 @@ def _hint_to_regex(hint):
 
 
 # ---------------------------------------------------------------------------
-# Automata Construction
-# ---------------------------------------------------------------------------
-def _build_line_automata(regex_str):
-    nfa = regex_to_nfa(regex_str)
-    nfa.Sigma.add("2")
-    dfa = nfa_to_min_dfa(nfa)
-    return encode_nfa(nfa), encode_dfa(dfa)
-
-
-# ---------------------------------------------------------------------------
 # Main Generator
 # ---------------------------------------------------------------------------
-def generate_candidates(seed, target_count=100):
+def generate_instances(seed, target_count=100):
     rng = random.Random(seed)
     seen = set()
     counter = 0
     skip_counter = 0
 
-    # Repeats Up to 30x Target Count to Ensure Sufficient Valid Candidates
+    total_start = time.perf_counter()
+    print_generator_header(PROBLEM_TYPE, target_count, seed)
+
+    # Repeats Up to 30x Target Count to Ensure Sufficient Valid Instances
     for _ in range(target_count * 30):
         if counter >= target_count:
             break
@@ -115,21 +114,25 @@ def generate_candidates(seed, target_count=100):
             skip_counter += 1
             continue
 
-        # Build Automata
-        nfa_tuples = []
-        dfa_tuples = []
-        for hint in row_hints + col_hints:
-            nfa_tuple, dfa_tuple = _build_line_automata(_hint_to_regex(hint))
-            nfa_tuples.append(nfa_tuple)
-            dfa_tuples.append(dfa_tuple)
+        instance_start = time.perf_counter()
+
+        regex_list = [_hint_to_regex(h) for h in row_hints + col_hints]
+        var_counts = [width] * len(row_hints) + [height] * len(col_hints)
+        result = construct_automata(regex_list, sigma_extra=["2"], feasibility_var_counts=var_counts)
+        if result is None:
+            skip_counter += 1
+            continue
+        nfa_tuples, dfa_tuples, metrics_list = result
 
         # Determine Blowup (Summed Across All Row + Column Constraints)
         total_nfa = sum(t[0] for t in nfa_tuples)
         total_dfa = sum(t[0] for t in dfa_tuples)
         blowup = total_dfa / total_nfa
 
+        instance_elapsed = time.perf_counter() - instance_start
+
         seen.add(key)
-        write_candidate({
+        write_instance({
             "problem_type": PROBLEM_TYPE,
             "name":         f"nonogram_{counter}",
             "seed":         seed,
@@ -142,19 +145,21 @@ def generate_candidates(seed, target_count=100):
                 "alphabet_size": S,
             },
             "alphabet_size": S,
-            "nfas":   [serialize_automaton(t) for t in nfa_tuples],
-            "dfas":   [serialize_automaton(t) for t in dfa_tuples],
-            "blowup": blowup,
+            "nfas":         [serialize_automaton(t) for t in nfa_tuples],
+            "dfas":         [serialize_automaton(t) for t in dfa_tuples],
+            "blowup":       blowup,
+            "construction": assemble_metrics(metrics_list),
         })
         counter += 1
-        print(f"Generated nonogram_{counter - 1} ({width}x{height}, d={density}) blowup={round(blowup, 2)}")
+        params_str = f"{width}x{height} density={density}"
+        print_generator_progress(counter, target_count, f"nonogram_{counter - 1}", params_str, blowup, instance_elapsed)
 
-    print(f"Done. {counter} candidates, {skip_counter} skipped.")
+    print_generator_footer(counter, skip_counter, time.perf_counter() - total_start)
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Generate nonogram candidate instances.")
+    parser = argparse.ArgumentParser(description="Generate nonogram instances.")
     parser.add_argument("--seed", type=int, default=71, help="Master RNG seed (default: 71)")
-    parser.add_argument("--target-count", type=int, default=100, help="Target number of candidates to generate (default: 100)")
+    parser.add_argument("--target-count", type=int, default=100, help="Target number of instances to generate (default: 100)")
     args = parser.parse_args()
-    generate_candidates(seed=args.seed, target_count=args.target_count)
+    generate_instances(seed=args.seed, target_count=args.target_count)

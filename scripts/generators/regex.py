@@ -1,8 +1,8 @@
 """
 Regex Instance Generator
 
-Generates candidate instances for the regex regular constraint benchmark.
-Each candidate is a single regex of the form (1|...|k)* anchor (1|...|k)^n
+Generates instances for the regex regular constraint benchmark.
+Each instance is a single regex of the form (1|...|k)* anchor (1|...|k)^n
 over the alphabet {1..k}, based on a classic DFA blowup construction.
 
 Problem Statement: somewhere near the end of the string, a fixed m-symbol
@@ -11,7 +11,7 @@ which possible end positions have already matched the anchor, while also
 tracking the last m-1 symbols to detect new matches. As a result, the DFA can
 grow exponentially in n, while the NFA grows only linearly.
 
-Each instance is parameterised by (n, k, m). Candidates whose predicted DFA
+Each instance is parameterised by (n, k, m). Instances whose predicted DFA
 size exceeds MAX_DFA_STATES are skipped, and anchors that are equivalent under
 alphabet renaming (e.g. (2,1,2) ≡ (1,2,1)) are removed.
 
@@ -21,6 +21,7 @@ CLI: python regex.py [--seed 71] [--target-count 100]
 import argparse
 import random
 import sys
+import time
 from pathlib import Path
 
 _ROOT = Path(__file__).resolve().parent.parent.parent
@@ -28,7 +29,14 @@ if str(_ROOT) not in sys.path:
     sys.path.insert(0, str(_ROOT))
 
 from scripts.automata_construction import construct_automata
-from scripts.generators.helper import serialize_automaton, write_candidate
+from scripts.generators.helper import (
+    assemble_metrics,
+    print_generator_footer,
+    print_generator_header,
+    print_generator_progress,
+    serialize_automaton,
+    write_instance,
+)
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -96,21 +104,23 @@ def _predicted_dfa_states(n, k, m):
 # ---------------------------------------------------------------------------
 # Main Generator
 # ---------------------------------------------------------------------------
-def generate_candidates(seed, target_count=100):
+def generate_instances(seed, target_count=100):
     rng = random.Random(seed)
     seen = set()
     counter = 0
     skip_counter = 0
 
-    # Repeats Up to 30x Target Count to Ensure Sufficient Valid Candidates
+    total_start = time.perf_counter()
+    print_generator_header(PROBLEM_TYPE, target_count, seed)
+
+    # Repeats Up to 30x Target Count to Ensure Sufficient Valid Instances
     for i in range(target_count * 30):
         if counter >= target_count:
             break
 
         regex, var_count, param = _sample_instance(rng)
 
-        # Dedup on (n, k, m, canonical anchor pattern): collapses alphabet-relabeling
-        # duplicates so each candidate is a genuinely distinct propagator test case.
+        # Dedup on (n, k, m, canonical anchor pattern) - Avoids Alphabet-Relabelling Equivalence
         key = (param["n"], param["k"], param["m"], _canonical_pattern(param["anchor"]))
         if key in seen:
             skip_counter += 1
@@ -121,21 +131,22 @@ def generate_candidates(seed, target_count=100):
             skip_counter += 1
             continue
 
-        # Construct Automata (Automata Construction Skips UNSAT Instances)
-        print("Attempting n: " + str(param["n"]) + ", k: " + str(param["k"]) + ", m: " + str(param["m"]) + ", anchor: " + str(param["anchor"]))
-        print("Skip Counter: " + str(skip_counter))
-        result = construct_automata([regex], var_count)
+        instance_start = time.perf_counter()
+
+        result = construct_automata([regex], feasibility_var_counts=[var_count])
         if result is None:
             skip_counter += 1
             continue
-        nfa_tuples, dfa_tuples = result
+        nfa_tuples, dfa_tuples, metrics = result
         nfa, dfa = nfa_tuples[0], dfa_tuples[0]
 
         # Determine Blowup
         blowup = dfa[0] / nfa[0]
 
+        instance_elapsed = time.perf_counter() - instance_start
+
         seen.add(key)
-        write_candidate({
+        write_instance({
             "problem_type":  PROBLEM_TYPE,
             "name":          f"regex_{counter}",
             "seed":          seed,
@@ -151,13 +162,21 @@ def generate_candidates(seed, target_count=100):
             "nfas":          [serialize_automaton(nfa)],
             "dfas":          [serialize_automaton(dfa)],
             "blowup":        blowup,
+            "construction":  assemble_metrics(metrics),
         })
         counter += 1
-        print("Generated instance: " + str(counter) + " with blowup: " + str(round(blowup, 2)) + ", n : "  + str(param["n"]))
+        anchor_str = "(" + ",".join(str(a) for a in param["anchor"]) + ")"
+        params_str = (
+            f"n={param['n']} k={param['k']} m={param['m']}"
+            f" anchor={anchor_str} var_count={var_count}"
+        )
+        print_generator_progress(counter, target_count, f"regex_{counter - 1}", params_str, blowup, instance_elapsed)
+
+    print_generator_footer(counter, skip_counter, time.perf_counter() - total_start)
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Generate regex candidate instances.")
+    parser = argparse.ArgumentParser(description="Generate regex instances.")
     parser.add_argument("--seed", type=int, default=71, help="Master RNG seed (default: 71)")
-    parser.add_argument("--target-count", type=int, default=100, help="Target number of candidates to generate (default: 100)")
+    parser.add_argument("--target-count", type=int, default=100, help="Target number of instances to generate (default: 100)")
     args = parser.parse_args()
-    generate_candidates(seed=args.seed, target_count=args.target_count)
+    generate_instances(seed=args.seed, target_count=args.target_count)

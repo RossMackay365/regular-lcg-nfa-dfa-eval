@@ -27,7 +27,7 @@ _SCRIPTS_ROOT = Path(__file__).resolve().parent
 if str(_SCRIPTS_ROOT) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS_ROOT))
 
-from generators.helper import BIN_DIRS
+from generators.helper import BIN_DIRS, CONSTRUCTION_STEPS
 
 
 # ---------------------------------------------------------------------------
@@ -66,6 +66,11 @@ CSV_STAT_COLUMNS = [
     "AverageBacktrackAmount",
 ]
 
+CSV_CONSTRUCTION_COLUMNS = []
+for _step in CONSTRUCTION_STEPS:
+    CSV_CONSTRUCTION_COLUMNS.append(f"{_step}_ms")
+    CSV_CONSTRUCTION_COLUMNS.append(f"{_step}_states")
+
 
 # ---------------------------------------------------------------------------
 # 1. Instance Loading
@@ -79,6 +84,7 @@ def discover_instance(json_path):
         "blowup":       instance["blowup"],
         "blowup_bin":   json_path.parent.name,
         "model":        MODELS_ROOT / f"{instance['problem_type']}.mzn",
+        "construction": instance.get("construction", {}),
     }
 
 
@@ -190,6 +196,7 @@ def write_instance_json(run_dir, info, per_config_results):
         "blowup":           info["blowup"],
         "timeout_seconds":  TIMEOUT_SEC,
         "model":            info["model"].relative_to(_ROOT).as_posix(),
+        "construction":     info["construction"],
         "configs":          per_config_results,
     }
     out_path.write_text(json.dumps(payload, indent=2))
@@ -197,6 +204,13 @@ def write_instance_json(run_dir, info, per_config_results):
 
 
 def flatten_for_csv(info, per_config_results):
+    construction = info.get("construction", {})
+    construction_cells = {}
+    for step in CONSTRUCTION_STEPS:
+        block = construction.get(step, {})
+        construction_cells[f"{step}_ms"]     = block.get("ms_total", "")
+        construction_cells[f"{step}_states"] = block.get("states_total", "")
+
     rows = []
     for cfg in CONFIGS:
         result = per_config_results[cfg["name"]]
@@ -212,6 +226,7 @@ def flatten_for_csv(info, per_config_results):
         }
         for key in CSV_STAT_COLUMNS:
             row[key] = result["stats"].get(key, "")
+        row.update(construction_cells)
         rows.append(row)
     return rows
 
@@ -220,7 +235,7 @@ def write_summary_csv(run_dir, rows):
     out_path = run_dir / "summary.csv"
     out_path.parent.mkdir(parents=True, exist_ok=True)
 
-    columns = CSV_FIXED_COLUMNS + CSV_STAT_COLUMNS
+    columns = CSV_FIXED_COLUMNS + CSV_STAT_COLUMNS + CSV_CONSTRUCTION_COLUMNS
     with out_path.open("w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=columns, extrasaction="ignore")
         writer.writeheader()
