@@ -17,9 +17,17 @@ prior results:
 
 import csv
 import json
+import random
 import subprocess
+import sys
 from datetime import datetime
 from pathlib import Path
+
+_SCRIPTS_ROOT = Path(__file__).resolve().parent
+if str(_SCRIPTS_ROOT) not in sys.path:
+    sys.path.insert(0, str(_SCRIPTS_ROOT))
+
+from generators.helper import BIN_DIRS
 
 
 # ---------------------------------------------------------------------------
@@ -32,6 +40,7 @@ JSON_ROOT    = _ROOT / "instances_json"
 RESULTS_ROOT = _ROOT / "results"
 
 TIMEOUT_SEC = 600
+MASTER_SEED = 42
 
 CONFIGS = [
     {"name": "nfa",           "dzn_kind": "nfa", "solver_id": "nl.tudelft.algorithmics.pumpkin-regular"},
@@ -221,10 +230,32 @@ def write_summary_csv(run_dir, rows):
 
 
 # ---------------------------------------------------------------------------
-# 6. Main
+# 6. Select Instances (Equal Number Per Bin)
+# ---------------------------------------------------------------------------
+def select_balanced_instances(seed=MASTER_SEED):
+    per_bin = {
+        bin_name: sorted(JSON_ROOT.glob(f"{dir_name}/*.json"))
+        for bin_name, dir_name in BIN_DIRS.items()
+    }
+
+    sizes = {b: len(p) for b, p in per_bin.items()}
+
+    n = min(sizes.values())
+    rng = random.Random(seed)
+    chosen = []
+    for bin_name in BIN_DIRS:
+        chosen.extend(sorted(rng.sample(per_bin[bin_name], n)))
+
+    print("Bin sizes on disk:  " + ", ".join(f"{b}={sizes[b]}" for b in BIN_DIRS))
+    print(f"Sub-sampling each bin to min size = {n} (seed={seed})\n")
+    return chosen
+
+
+# ---------------------------------------------------------------------------
+# 7. Main
 # ---------------------------------------------------------------------------
 def main():
-    json_paths = sorted(JSON_ROOT.rglob("*.json"))
+    json_paths = select_balanced_instances()
 
     run_dir = RESULTS_ROOT / datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     run_dir.mkdir(parents=True, exist_ok=True)

@@ -35,4 +35,4 @@ constraint
         regular_nfa(variables, Q, S, d_nfa, q0, F)
     endif;
 
-solve satisfy;
+solve :: int_search(variables, input_order, indomain_min) satisfy;

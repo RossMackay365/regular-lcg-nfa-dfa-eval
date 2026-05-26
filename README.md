@@ -6,12 +6,11 @@ This repository is the reproducibility package for Ross Mackay's thesis "NFA vs 
 
 ### Pipeline
 
-There are four stages used to produce and test problem instances against NFA, DFA and decomposition-based propagators. The stages are outlined below, and any stage can be rerun in isolation to ensure reproducibility.
+There are three stages used to produce and test problem instances against NFA, DFA and decomposition-based propagators. The stages are outlined below, and any stage can be rerun in isolation to ensure reproducibility.
 
-* **Stage 1 — `generate_candidates.py`**. Calls the respective generators for each problem type from `scripts/generators/{problem_type}.py`, which generate the instances, building the per-instance NFA(s) and minimal DFA(s) via `scripts/automata_construction.py`, records the blowup ratio, and writes one JSON per candidate to `candidate_instances/{problem_type}/`.
-* **Stage 2 — `select_instances.py`**. Reads `candidate_instances/`, bins each candidate by its blowup ratio, and randomly samples 20 candidates per blowup bin under the master seed, writing the chosen instances to `instances_json/{blowup}/`.
-* **Stage 3 — `generate_dzn.py`**. Reads each selected `instances_json/{blowup}/{name}.json` and emits two `.dzn` files: `instances_dzn/nfa/{blowup}/{name}.dzn` (NFA transition tables) and `instances_dzn/dfa/{blowup}/{name}.dzn` (minimal DFA transition tables). Both share the same problem parameters, only the automata representation differs.
-* **Stage 4 — `run_experiments.py`**. For each selected instance, runs three configurations against `models/{problem_type}.mzn`: NFA propagator (NFA `.dzn`, `mode=1`), DFA propagator (DFA `.dzn`, `mode=0`), and solver decomposition (DFA `.dzn`, `mode=0`, with solver configured for decomposition). 60 instances × 3 configs = 180 runs.
+* **Stage 1 — `generate_candidates.py`**. Calls the respective generators for each problem type from `scripts/generators/{problem_type}.py`, which generate the instances, building the per-instance NFA(s) and minimal DFA(s) via `scripts/automata_construction.py`, records the blowup ratio, and writes one JSON per instance directly into the blowup-bin folder it belongs to: `instances_json/{blowup}/{name}.json`. Bins are assigned from the measured blowup ratio against the thresholds in `scripts/blowup_bins.py`.
+* **Stage 2 — `generate_dzn.py`**. Reads each `instances_json/{blowup}/{name}.json` and emits two `.dzn` files: `instances_dzn/nfa/{blowup}/{name}.dzn` (NFA transition tables) and `instances_dzn/dfa/{blowup}/{name}.dzn` (minimal DFA transition tables). Both share the same problem parameters, only the automata representation differs.
+* **Stage 3 — `run_experiments.py`**. Sub-samples each blowup bin down to `min(|bin|)` instances using a seeded random draw so every bin contributes the same number of instances. For each selected instance, runs three configurations against `models/{problem_type}.mzn`: NFA propagator (NFA `.dzn`, `mode=1`), DFA propagator (DFA `.dzn`, `mode=0`), and solver decomposition (DFA `.dzn`, `mode=0`, with solver configured for decomposition).
 
 ---
 
@@ -62,9 +61,9 @@ Instances are binned along a single axis: **blowup ratio**, measured as minimal 
 | Medium | 2x to 10x  |
 | High   | > 10x      |
 
-20 instances per bin, randomly sampled under the master seed, for 60 instances total. Bin assignment is empirical: every candidate is binned based on its measured blowup, regardless of the problem type it was generated from.
+Every generated instance is written into its bin folder as it is produced; no separate selection step exists. Because bin sizes are typically uneven across problem types, `run_experiments.py` draws a seeded random sub-sample of size `min(|bin|)` from each bin at run time so every bin contributes the same number of instances to the experiment. Bin assignment is empirical: every instance is binned based on its measured blowup, regardless of the problem type it was generated from.
 
-For problem types with multiple regular constraints per instance (shift_scheduling, nonograms, pentominoes), the per-instance blowup used for binning is `max_k(|DFA_k| / |NFA_k|)`. Per-constraint detail is preserved in the candidate `.json`.
+For problem types with multiple regular constraints per instance (shift_scheduling, nonograms, pentominoes), the per-instance blowup used for binning is aggregated across constraints (see each generator for its exact aggregation). Per-constraint detail is preserved in the instance `.json`.
 
 ---
 
@@ -73,17 +72,14 @@ For problem types with multiple regular constraints per instance (shift_scheduli
 **`models/{problem_type}.mzn`**
 One model per problem type. Same model file is used for NFA, DFA, and decomposition runs. Only the data file and the `mode` parameter differ.
 
-**`candidate_instances/{problem_type}/{name}.json`**
-Stage 1 output. Full candidate pool. Contains problem type parameters, NFA(s), minimal DFA(s), per-constraint and per-instance blowup ratios, and generator seed.
-
 **`instances_json/{blowup}/{name}.json`**
-Stage 2 output. The 60 selected instances, named `{blowup}_{index}`. Candidate contents plus the assigned blowup bin and master-seed sample index. This file is the source of truth for the problem, with both dzn files generated from it.
+Stage 1 output. Every generated instance, stratified by blowup bin. Each file contains the problem type parameters, NFA(s), minimal DFA(s), per-constraint and per-instance blowup ratios, and generator seed. This file is the source of truth for the problem, with both dzn files generated from it.
 
 **`instances_dzn/nfa/{blowup}/{name}.dzn`**
-Stage 3 output. Data file for the NFA-propagator run. Contains the NFA transition tables plus problem parameters and per-constraint `q0` / `F` arrays.
+Stage 2 output. Data file for the NFA-propagator run. Contains the NFA transition tables plus problem parameters and per-constraint `q0` / `F` arrays.
 
 **`instances_dzn/dfa/{blowup}/{name}.dzn`**
-Stage 3 output. Data file for the DFA-propagator run and the decomposition run. Contains the minimal DFA transition tables, with the same shape as the NFA `.dzn`.
+Stage 2 output. Data file for the DFA-propagator run and the decomposition run. Contains the minimal DFA transition tables, with the same shape as the NFA `.dzn`.
 
 Blowup directories are numbered for sort order: `0_low_blowup`, `1_medium_blowup`, `2_high_blowup`.
 
@@ -103,6 +99,6 @@ Each invocation of `run_experiments.py` writes into a fresh timestamped run dire
 
 ### Reproducibility
 
-A single master seed drives all randomised generation and sampling, and is recorded in every instance `.json`. Rerunning the pipeline from that seed reproduces the candidate pool, the selected 60, and the `.dzn` files exactly. This ensures full reproducibility of the entire experimental data set, and experimental results.
+A single master seed drives all randomised generation and the run-time bin sub-sampling, and is recorded in every instance `.json`. Rerunning the pipeline from that seed reproduces the generated instances, the `.dzn` files, and the per-bin sub-sample chosen by `run_experiments.py` exactly. This ensures full reproducibility of the entire experimental data set, and experimental results.
 
 Stage 1 scripts (`generate_candidates.py` and each `scripts/generators/{problem_type}.py`) accept `--seed` and `--target-count` CLI flags so an alternate seed or candidate-pool size can be run without modifying the code. Defaults match the recorded master seed (42) and the standard maximum per-problem target (100).

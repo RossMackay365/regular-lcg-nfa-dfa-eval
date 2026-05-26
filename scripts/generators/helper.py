@@ -5,7 +5,29 @@ from pathlib import Path
 # ---------------------------------------------------------------------------
 # Output Location
 # ---------------------------------------------------------------------------
-OUTPUT_ROOT = Path(__file__).resolve().parent.parent.parent / "candidate_instances"
+OUTPUT_ROOT = Path(__file__).resolve().parent.parent.parent / "instances_json"
+
+
+# ---------------------------------------------------------------------------
+# Blowup Bin Helpers
+# ---------------------------------------------------------------------------
+BIN_DIRS = {
+    "low":    "0_low_blowup",
+    "medium": "1_medium_blowup",
+    "high":   "2_high_blowup",
+}
+
+
+def bin_for(blowup):
+    if blowup < 2:
+        return "low"
+    if blowup < 10:
+        return "medium"
+    return "high"
+
+
+def bin_dir_for(blowup):
+    return BIN_DIRS[bin_for(blowup)]
 
 
 # ---------------------------------------------------------------------------
@@ -74,9 +96,9 @@ def _dump_candidate(data):
 # File Writing
 # ---------------------------------------------------------------------------
 def write_candidate(candidate):
-    problem_dir = OUTPUT_ROOT / candidate["problem_type"]
-    problem_dir.mkdir(parents=True, exist_ok=True)
-    path = problem_dir / f"{candidate['name']}.json"
+    bin_dir = OUTPUT_ROOT / bin_dir_for(candidate["blowup"])
+    bin_dir.mkdir(parents=True, exist_ok=True)
+    path = bin_dir / f"{candidate['name']}.json"
     if path.exists():
         return False
     with path.open("w") as f:
