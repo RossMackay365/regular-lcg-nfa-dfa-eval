@@ -1,8 +1,8 @@
 %
-% Pentominoes Model
+% Polyominoes Model
 %
-% A grid-tiling puzzle where the board must be filled with pentomino pieces
-% (each covering exactly five cells in one of 12 distinct shapes).
+% A grid-tiling puzzle where the board must be filled with polyomino pieces
+% (irregular shapes of varying cell counts).
 %
 % Written by Ross Mackay, with reference to a model by Mikael Zayenz Lagerkvist (2020):
 %   https://github.com/zayenz/minizinc-pentominoes-generator/blob/main/model/pentominoes.mzn
@@ -62,7 +62,7 @@ constraint forall (e in 1..n_expressions) (
     endif
 );
 
-solve :: int_search(board, input_order, indomain_min, complete) satisfy;
+solve :: int_search(board, input_order, indomain_min) satisfy;
 
 array[1..26] of string: alphabet = [
   "A","B","C","D","E","F","G","H","I","J","K","L","M",
@@ -70,7 +70,7 @@ array[1..26] of string: alphabet = [
 ];
 
 output [
-  "Pentominoes Solution:\n"
+  "Polyominoes Solution:\n"
 ] ++
 [
   alphabet[fix(board[r,c])] ++

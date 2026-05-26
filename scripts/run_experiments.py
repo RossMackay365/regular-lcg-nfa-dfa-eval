@@ -40,7 +40,7 @@ JSON_ROOT    = _ROOT / "instances_json"
 RESULTS_ROOT = _ROOT / "results"
 
 TIMEOUT_SEC = 600
-MASTER_SEED = 42
+MASTER_SEED = 71
 
 CONFIGS = [
     {"name": "nfa",           "dzn_kind": "nfa", "solver_id": "nl.tudelft.algorithmics.pumpkin-regular"},

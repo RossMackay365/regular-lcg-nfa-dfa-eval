@@ -1,0 +1,3 @@
+[submodule "minizinc-pentominoes-generator"]
+	path = minizinc-pentominoes-generator
+	url = https://github.com/zayenz/minizinc-pentominoes-generator.git

@@ -27,7 +27,7 @@ Every `.mzn` in `models/` follows the same convention so a single `.dzn` schema 
 
 For **single-constraint** problem types (`regex`) these are flat: one `q0`, one `F`, one 2D `d_dfa`, one 2D `d_nfa`.
 
-For **multi-constraint** problem types (`nonograms`, `pentominoes`, `shift_scheduling`) the K independent automata are packed in 3D arrays:
+For **multi-constraint** problem types (`nonograms`, `polyominoes`) the K independent automata are packed in 3D arrays:
 
 ```minizinc
 array[1..K] of int: q0;
@@ -42,18 +42,17 @@ Each `regular(...)` call uses the K-th automaton by slicing its 2D transition ta
 
 ### Problem Types
 
-Four problem types, all selected or restricted to be regular-dominated:
+Three problem types, all selected or restricted to be regular-dominated:
 
-* shift scheduling (k-step rest day constraints)
 * nonograms
-* pentominoes
+* polyominoes
 * regex
 
 ---
 
 ### Experimental Matrix
 
-Instances are binned along a single axis: **blowup ratio**, measured as minimal DFA states divided by NFA states (Glushkov Construction).
+Instances are binned along a single axis: **blowup ratio**, measured as minimal DFA states divided by reduced NFA states.
 
 | Bin    | Range      |
 |--------|------------|
@@ -63,7 +62,11 @@ Instances are binned along a single axis: **blowup ratio**, measured as minimal 
 
 Because bin sizes are typically uneven across problem types, `run_experiments.py` draws a seeded random sub-sample of size `min(|bin|)` from each bin at run time so every bin contributes the same number of instances to the experiment. Bin assignment is empirical: every instance is binned based on its measured blowup, regardless of the problem type it was generated from.
 
-For problem types with multiple regular constraints per instance (shift_scheduling, nonograms, pentominoes), the per-instance blowup used for binning is aggregated across constraints (see each generator for its exact aggregation). Per-constraint detail is preserved in the instance `.json`.
+For problem types with multiple regular constraints per instance (nonograms, polyominoes), the per-instance blowup used for binning is aggregated across constraints (see each generator for its exact aggregation). Per-constraint detail is preserved in the instance `.json`.
+
+#### NFA construction
+
+The denominator uses a Glushkov NFA reduced with right-bisimulation reduction (rEquivNFA in FAdo). This preserves the language, runs in polynomial time, and keeps the automaton nondeterministic. Raw Glushkov NFAs contain structural redundancy that a minimal DFA removes, so comparing against them can underestimate determinisation cost. Computing the true minimum NFA is PSPACE-complete, so bisimulation reduction is a practical approximation: it compares the smallest NFA we can efficiently build with the minimal DFA.
 
 ---
 
@@ -101,4 +104,4 @@ Each invocation of `run_experiments.py` writes into a fresh timestamped run dire
 
 A single master seed drives all randomised generation and the run-time bin sampling, and is recorded in every instance `.json`. Rerunning the pipeline from that seed reproduces the generated instances, the `.dzn` files, and the per-bin sample chosen by `run_experiments.py` exactly. This ensures full reproducibility of the entire experimental data set, and experimental results.
 
-Stage 1 scripts (`generate_candidates.py` and each `scripts/generators/{problem_type}.py`) accept `--seed` and `--target-count` CLI flags so an alternate seed or candidate-pool size can be run without modifying the code. Defaults match the recorded master seed (42) and the standard maximum per-problem target (100).
+Stage 1 scripts (`generate_candidates.py` and each `scripts/generators/{problem_type}.py`) accept `--seed` and `--target-count` CLI flags so an alternate seed or candidate-pool size can be run without modifying the code. Defaults match the recorded master seed (71) and the standard maximum per-problem target (100).

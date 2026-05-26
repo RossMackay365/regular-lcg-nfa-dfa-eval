@@ -6,15 +6,16 @@ _ROOT = Path(__file__).resolve().parent
 if str(_ROOT) not in sys.path:
     sys.path.insert(0, str(_ROOT))
 
-from generators import shift_scheduling, regex
+from generators import regex, nonogram, polyominoes
 
 
-MASTER_SEED = 42
+MASTER_SEED = 71
 MAX_TARGET_PER_PROBLEM = 100
 
 GENERATORS = [
-    shift_scheduling,
     regex,
+    nonogram,
+    polyominoes,
 ]
 
 

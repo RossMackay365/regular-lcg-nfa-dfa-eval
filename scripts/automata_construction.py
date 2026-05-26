@@ -92,12 +92,11 @@ def encode_dfa(dfa):
     return Q, S, d, q0, F
 
 
-## Regex to NFA (Glushkov Construction)
+## Regex to NFA (Glushkov Construction, then Right-Bisimulation Reduction)
 def regex_to_nfa(regex_str):
     regex = str2regexp(regex_str)
     nfa = regex.nfaGlushkov()
-    # save_diagram(nfa, "output", is_dfa=False)
-    return nfa
+    return nfa.rEquivNFA()
 
 ## NFA to Minimal DFA
 def nfa_to_min_dfa(nfa):

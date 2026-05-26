@@ -75,7 +75,7 @@ constraint forall (c in 1..width) (
     endif
 );
 
-solve satisfy;
+solve :: int_search(grid, input_order, indomain_min) satisfy;
 
 function string: cell(int: x) =
     if x == 2 then "#" else "." endif;

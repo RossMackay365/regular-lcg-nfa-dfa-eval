@@ -6,7 +6,7 @@ For each problem instance, two .dzn files are generated:
   1) DFA Representation: Mode = 0, populated d_dfa, empty d_nfa.
   2) NFA Representation: Mode = 1, populated d_nfa, empty d_dfa.
 
-These files are then written too the instances_dzn folder.
+These files are then written to the instances_dzn folder.
 """
 
 import json
@@ -112,44 +112,114 @@ def build_regex_body(instance, is_dfa):
     )
 
 
-def build_shift_scheduling_body(instance, is_dfa):
+def build_nonogram_body(instance, is_dfa):
     automata = instance["dfas" if is_dfa else "nfas"]
-    K = len(automata)
-    S = int(instance["alphabet_size"])
+    params   = instance["params"]
+    height   = int(params["height"])
+    width    = int(params["width"])
+    S        = int(instance["alphabet_size"])
+
+    # Instance JSON stores rows first, then columns.
+    row_automata = automata[:height]
+    col_automata = automata[height:]
+    assert len(col_automata) == width, (
+        f"Expected {width} column automata, got {len(col_automata)}"
+    )
+
     Q = max(int(a["Q"]) for a in automata)
 
-    q0_per_k = [int(a["q0"]) for a in automata]
-    F_per_k  = [a["F"] for a in automata]
+    row_q0 = [int(a["q0"]) for a in row_automata]
+    row_F  = [a["F"] for a in row_automata]
+    col_q0 = [int(a["q0"]) for a in col_automata]
+    col_F  = [a["F"] for a in col_automata]
+
+    if is_dfa:
+        row_d_dfa = []
+        for a in row_automata:
+            row_d_dfa.extend(flatten_dfa(a, Q, S))
+        col_d_dfa = []
+        for a in col_automata:
+            col_d_dfa.extend(flatten_dfa(a, Q, S))
+        row_d_nfa = [[] for _ in range(height * Q * S)]
+        col_d_nfa = [[] for _ in range(width  * Q * S)]
+    else:
+        row_d_nfa = []
+        for a in row_automata:
+            row_d_nfa.extend(flatten_nfa(a, Q, S))
+        col_d_nfa = []
+        for a in col_automata:
+            col_d_nfa.extend(flatten_nfa(a, Q, S))
+        row_d_dfa = [0] * (height * Q * S)
+        col_d_dfa = [0] * (width  * Q * S)
+
+    row_q0_array = "[" + ", ".join(str(x) for x in row_q0) + "]"
+    row_F_array  = "[" + ", ".join(fmt_set(f) for f in row_F) + "]"
+    col_q0_array = "[" + ", ".join(str(x) for x in col_q0) + "]"
+    col_F_array  = "[" + ", ".join(fmt_set(f) for f in col_F) + "]"
+
+    return (
+        f"height = {height};\n"
+        f"width = {width};\n"
+        f"Q = {Q};\n"
+        f"S = {S};\n"
+        f"row_q0 = {row_q0_array};\n"
+        f"row_F = {row_F_array};\n"
+        f"col_q0 = {col_q0_array};\n"
+        f"col_F = {col_F_array};\n"
+        f"row_d_dfa = {fmt_3d(height, Q, S, row_d_dfa, as_sets=False)};\n"
+        f"row_d_nfa = {fmt_3d(height, Q, S, row_d_nfa, as_sets=True)};\n"
+        f"col_d_dfa = {fmt_3d(width,  Q, S, col_d_dfa, as_sets=False)};\n"
+        f"col_d_nfa = {fmt_3d(width,  Q, S, col_d_nfa, as_sets=True)};\n"
+    )
+
+
+def build_polyominoes_body(instance, is_dfa):
+    automata      = instance["dfas" if is_dfa else "nfas"]
+    params        = instance["params"]
+    size          = int(params["size"])
+    tiles         = int(params["tiles"])
+    n_expressions = tiles
+    S             = int(instance["alphabet_size"])
+    assert len(automata) == n_expressions, (
+        f"Expected {n_expressions} piece automata, got {len(automata)}"
+    )
+
+    Q = max(int(a["Q"]) for a in automata)
+
+    q0 = [int(a["q0"]) for a in automata]
+    F  = [a["F"] for a in automata]
 
     if is_dfa:
         d_dfa = []
         for a in automata:
             d_dfa.extend(flatten_dfa(a, Q, S))
-        d_nfa = [[] for _ in range(K * Q * S)]
+        d_nfa = [[] for _ in range(n_expressions * Q * S)]
     else:
         d_nfa = []
         for a in automata:
             d_nfa.extend(flatten_nfa(a, Q, S))
-        d_dfa = [0] * (K * Q * S)
+        d_dfa = [0] * (n_expressions * Q * S)
 
-    q0_array = "[" + ", ".join(str(x) for x in q0_per_k) + "]"
-    F_array  = "[" + ", ".join(fmt_set(f) for f in F_per_k) + "]"
+    q0_array = "[" + ", ".join(str(x) for x in q0) + "]"
+    F_array  = "[" + ", ".join(fmt_set(f) for f in F) + "]"
 
     return (
-        f"sequence_length = {int(instance['params']['var_count'])};\n"
-        f"n_constraints = {K};\n"
+        f"size = {size};\n"
+        f"tiles = {tiles};\n"
+        f"n_expressions = {n_expressions};\n"
         f"Q = {Q};\n"
         f"S = {S};\n"
         f"q0 = {q0_array};\n"
         f"F = {F_array};\n"
-        f"d_dfa = {fmt_3d(K, Q, S, d_dfa, as_sets=False)};\n"
-        f"d_nfa = {fmt_3d(K, Q, S, d_nfa, as_sets=True)};\n"
+        f"d_dfa = {fmt_3d(n_expressions, Q, S, d_dfa, as_sets=False)};\n"
+        f"d_nfa = {fmt_3d(n_expressions, Q, S, d_nfa, as_sets=True)};\n"
     )
 
 
 BODY_BUILDERS = {
     "regex":            build_regex_body,
-    "shift_scheduling": build_shift_scheduling_body,
+    "nonogram":         build_nonogram_body,
+    "polyominoes":      build_polyominoes_body,
 }
 
 

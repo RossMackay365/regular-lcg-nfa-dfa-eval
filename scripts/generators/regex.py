@@ -15,7 +15,7 @@ Each instance is parameterised by (n, k, m). Candidates whose predicted DFA
 size exceeds MAX_DFA_STATES are skipped, and anchors that are equivalent under
 alphabet renaming (e.g. (2,1,2) ≡ (1,2,1)) are removed.
 
-CLI: python regex.py [--seed 42] [--target-count 100]
+CLI: python regex.py [--seed 71] [--target-count 100]
 """
 
 import argparse
@@ -157,7 +157,7 @@ def generate_candidates(seed, target_count=100):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Generate regex candidate instances.")
-    parser.add_argument("--seed", type=int, default=42, help="Master RNG seed (default: 42)")
+    parser.add_argument("--seed", type=int, default=71, help="Master RNG seed (default: 71)")
     parser.add_argument("--target-count", type=int, default=100, help="Target number of candidates to generate (default: 100)")
     args = parser.parse_args()
     generate_candidates(seed=args.seed, target_count=args.target_count)

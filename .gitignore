@@ -2,3 +2,4 @@ __pycache__/
 *.pyc
 *.pyo
 CLAUDE.md
+minizinc-pentominoes-generator/target/
