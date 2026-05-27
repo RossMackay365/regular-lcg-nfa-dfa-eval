@@ -44,7 +44,7 @@ from scripts.generators.helper import (
 PROBLEM_TYPE = "regex"
 
 MAX_DFA_STATES = 150_000
-N_VALUES = [6, 7, 8, 9, 10, 11, 12, 13]
+N_VALUES = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
 K_VALUES = [2, 3]
 M_VALUES = [2, 3]
 
