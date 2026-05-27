@@ -1,0 +1,220 @@
+{
+  "instance": "nonogram_9",
+  "problem_type": "nonogram",
+  "blowup_bin": "0_low_blowup",
+  "blowup": 1.2040816326530612,
+  "timeout_seconds": 600,
+  "model": "models/nonogram.mzn",
+  "construction": {
+    "nfa_glushkov": {
+      "ms": [
+        0.27210000553168356,
+        0.16700000560376793,
+        0.1748999929986894,
+        0.0560000044060871,
+        0.21069998911116272,
+        0.18010000349022448,
+        0.15890000213403255,
+        0.09270000737160444,
+        0.18870001076720655,
+        0.17840000509750098
+      ],
+      "ms_total": 1.6795000265119597,
+      "states": [
+        9,
+        8,
+        9,
+        2,
+        9,
+        9,
+        8,
+        4,
+        10,
+        9
+      ],
+      "states_total": 77
+    },
+    "nfa_rbisim": {
+      "ms": [
+        0.11750000703614205,
+        0.076299998909235,
+        0.10819999442901462,
+        0.09619999036658555,
+        0.1078000059351325,
+        0.09640000644139946,
+        0.07499998901039362,
+        0.027300004148855805,
+        0.13980000221636146,
+        0.09729999874252826
+      ],
+      "ms_total": 0.9417999972356483,
+      "states": [
+        6,
+        5,
+        6,
+        1,
+        6,
+        6,
+        5,
+        2,
+        6,
+        6
+      ],
+      "states_total": 49
+    },
+    "dfa_subset": {
+      "ms": [
+        0.05329999839887023,
+        0.04060000355821103,
+        0.04149999585933983,
+        0.02579999272711575,
+        0.04510000871960074,
+        0.042499988921917975,
+        0.03979999746661633,
+        0.02340000355616212,
+        0.04889999399892986,
+        0.04089999129064381
+      ],
+      "ms_total": 0.4017999744974077,
+      "states": [
+        9,
+        8,
+        9,
+        2,
+        9,
+        9,
+        8,
+        4,
+        10,
+        9
+      ],
+      "states_total": 77
+    },
+    "dfa_min": {
+      "ms": [
+        0.18509999790694565,
+        0.12989999959245324,
+        0.16280000272672623,
+        0.05370000144466758,
+        0.16709999181330204,
+        0.14980000560171902,
+        0.12430000060703605,
+        0.06900000153109431,
+        0.17600000137463212,
+        0.14620000729337335
+      ],
+      "ms_total": 1.3639000098919496,
+      "states": [
+        7,
+        6,
+        7,
+        2,
+        7,
+        7,
+        6,
+        3,
+        7,
+        7
+      ],
+      "states_total": 59
+    }
+  },
+  "configs": {
+    "nfa": {
+      "solver_id": "nl.tudelft.algorithmics.pumpkin-regular",
+      "dzn": "instances_dzn/nfa/0_low_blowup/nonogram_9.dzn",
+      "status": "SATISFIED",
+      "exit_code": 0,
+      "stats": {
+        "paths": 0,
+        "flatIntVars": 25,
+        "flatIntConstraints": 10,
+        "method": "satisfy",
+        "flatTime": 0.229366,
+        "nodes": 0,
+        "restarts": 0,
+        "peakDepth": 0,
+        "solveTime": 1.12e-05,
+        "variables": 26,
+        "propagators": 11,
+        "failures": 0,
+        "propagations": 22,
+        "nogoods": 0,
+        "AverageConflictSize": 0,
+        "NumUnitNogoodsLearned": 0,
+        "AverageLearnedNogoodLength": 0,
+        "AverageBacktrackAmount": 0,
+        "AverageLbd": 0,
+        "nSolutions": 1
+      },
+      "errors": [],
+      "parse_errors": [],
+      "stdout": "{\"type\": \"statistics\", \"statistics\": {\"paths\": 0, \"flatIntVars\": 25, \"flatIntConstraints\": 10, \"method\": \"satisfy\", \"flatTime\": 0.229366}}\n{\"type\": \"statistics\", \"statistics\": {\"nodes\": 0, \"restarts\": 0, \"peakDepth\": 0, \"solveTime\": 1.12e-05, \"variables\": 26, \"propagators\": 11, \"failures\": 0, \"propagations\": 22, \"nogoods\": 0, \"AverageConflictSize\": 0, \"NumUnitNogoodsLearned\": 0, \"AverageLearnedNogoodLength\": 0, \"AverageBacktrackAmount\": 0, \"AverageLbd\": 0}}\n{\"type\": \"solution\", \"output\": {\"default\": \"Nonogram Solution:\\n\\n##.##\\n##..#\\n#.###\\n.....\\n##.##\\n\", \"raw\": \"Nonogram Solution:\\n\\n##.##\\n##..#\\n#.###\\n.....\\n##.##\\n\"}, \"sections\": [\"default\", \"raw\"]}\n{\"type\": \"statistics\", \"statistics\": {\"nSolutions\": 1}}\n",
+      "stderr": ""
+    },
+    "dfa": {
+      "solver_id": "nl.tudelft.algorithmics.pumpkin-regular",
+      "dzn": "instances_dzn/dfa/0_low_blowup/nonogram_9.dzn",
+      "status": "SATISFIED",
+      "exit_code": 0,
+      "stats": {
+        "paths": 0,
+        "flatIntVars": 25,
+        "flatIntConstraints": 10,
+        "method": "satisfy",
+        "flatTime": 0.26017,
+        "nodes": 0,
+        "restarts": 0,
+        "peakDepth": 0,
+        "solveTime": 1.14e-05,
+        "variables": 26,
+        "propagators": 11,
+        "failures": 0,
+        "propagations": 22,
+        "nogoods": 0,
+        "AverageConflictSize": 0,
+        "NumUnitNogoodsLearned": 0,
+        "AverageLearnedNogoodLength": 0,
+        "AverageBacktrackAmount": 0,
+        "AverageLbd": 0,
+        "nSolutions": 1
+      },
+      "errors": [],
+      "parse_errors": [],
+      "stdout": "{\"type\": \"statistics\", \"statistics\": {\"paths\": 0, \"flatIntVars\": 25, \"flatIntConstraints\": 10, \"method\": \"satisfy\", \"flatTime\": 0.26017}}\n{\"type\": \"statistics\", \"statistics\": {\"nodes\": 0, \"restarts\": 0, \"peakDepth\": 0, \"solveTime\": 1.14e-05, \"variables\": 26, \"propagators\": 11, \"failures\": 0, \"propagations\": 22, \"nogoods\": 0, \"AverageConflictSize\": 0, \"NumUnitNogoodsLearned\": 0, \"AverageLearnedNogoodLength\": 0, \"AverageBacktrackAmount\": 0, \"AverageLbd\": 0}}\n{\"type\": \"solution\", \"output\": {\"default\": \"Nonogram Solution:\\n\\n##.##\\n##..#\\n#.###\\n.....\\n##.##\\n\", \"raw\": \"Nonogram Solution:\\n\\n##.##\\n##..#\\n#.###\\n.....\\n##.##\\n\"}, \"sections\": [\"default\", \"raw\"]}\n{\"type\": \"statistics\", \"statistics\": {\"nSolutions\": 1}}\n",
+      "stderr": ""
+    },
+    "decomposition": {
+      "solver_id": "nl.tudelft.algorithmics.pumpkin-decomposition",
+      "dzn": "instances_dzn/dfa/0_low_blowup/nonogram_9.dzn",
+      "status": "SATISFIED",
+      "exit_code": 0,
+      "stats": {
+        "paths": 0,
+        "flatIntVars": 105,
+        "flatIntConstraints": 90,
+        "method": "satisfy",
+        "flatTime": 0.221661,
+        "nodes": 0,
+        "restarts": 0,
+        "peakDepth": 0,
+        "solveTime": 1.43e-05,
+        "variables": 114,
+        "propagators": 131,
+        "failures": 0,
+        "propagations": 452,
+        "nogoods": 0,
+        "AverageConflictSize": 0,
+        "NumUnitNogoodsLearned": 0,
+        "AverageLearnedNogoodLength": 0,
+        "AverageBacktrackAmount": 0,
+        "AverageLbd": 0,
+        "nSolutions": 1
+      },
+      "errors": [],
+      "parse_errors": [],
+      "stdout": "{\"type\": \"statistics\", \"statistics\": {\"paths\": 0, \"flatIntVars\": 105, \"flatIntConstraints\": 90, \"method\": \"satisfy\", \"flatTime\": 0.221661}}\n{\"type\": \"statistics\", \"statistics\": {\"nodes\": 0, \"restarts\": 0, \"peakDepth\": 0, \"solveTime\": 1.43e-05, \"variables\": 114, \"propagators\": 131, \"failures\": 0, \"propagations\": 452, \"nogoods\": 0, \"AverageConflictSize\": 0, \"NumUnitNogoodsLearned\": 0, \"AverageLearnedNogoodLength\": 0, \"AverageBacktrackAmount\": 0, \"AverageLbd\": 0}}\n{\"type\": \"solution\", \"output\": {\"default\": \"Nonogram Solution:\\n\\n##.##\\n##..#\\n#.###\\n.....\\n##.##\\n\", \"raw\": \"Nonogram Solution:\\n\\n##.##\\n##..#\\n#.###\\n.....\\n##.##\\n\"}, \"sections\": [\"default\", \"raw\"]}\n{\"type\": \"statistics\", \"statistics\": {\"nSolutions\": 1}}\n",
+      "stderr": ""
+    }
+  }
+}

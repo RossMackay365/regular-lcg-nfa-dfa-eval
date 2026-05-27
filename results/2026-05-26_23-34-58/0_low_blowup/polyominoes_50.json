@@ -1,0 +1,156 @@
+{
+  "instance": "polyominoes_50",
+  "problem_type": "polyominoes",
+  "blowup_bin": "0_low_blowup",
+  "blowup": 0.6805251641137856,
+  "timeout_seconds": 600,
+  "model": "models/polyominoes.mzn",
+  "construction": {
+    "nfa_glushkov": {
+      "ms": [
+        5.957700006547384,
+        28.5474999982398
+      ],
+      "ms_total": 34.505200004787184,
+      "states": [
+        226,
+        681
+      ],
+      "states_total": 907
+    },
+    "nfa_rbisim": {
+      "ms": [
+        175.45960001007188,
+        1594.081199989887
+      ],
+      "ms_total": 1769.5407999999588,
+      "states": [
+        63,
+        394
+      ],
+      "states_total": 457
+    },
+    "dfa_subset": {
+      "ms": [
+        1.2197999894851819,
+        12.768700005835854
+      ],
+      "ms_total": 13.988499995321035,
+      "states": [
+        116,
+        484
+      ],
+      "states_total": 600
+    },
+    "dfa_min": {
+      "ms": [
+        21.822499998961575,
+        648.4942999959458
+      ],
+      "ms_total": 670.3167999949073,
+      "states": [
+        61,
+        250
+      ],
+      "states_total": 311
+    }
+  },
+  "configs": {
+    "nfa": {
+      "solver_id": "nl.tudelft.algorithmics.pumpkin-regular",
+      "dzn": "instances_dzn/nfa/0_low_blowup/polyominoes_50.dzn",
+      "status": "SATISFIED",
+      "exit_code": 0,
+      "stats": {
+        "paths": 0,
+        "flatIntVars": 64,
+        "flatIntConstraints": 2,
+        "method": "satisfy",
+        "flatTime": 0.25247,
+        "nodes": 1,
+        "restarts": 0,
+        "peakDepth": 1,
+        "solveTime": 0.0098652,
+        "variables": 66,
+        "propagators": 3,
+        "failures": 0,
+        "propagations": 8,
+        "nogoods": 0,
+        "AverageConflictSize": 0,
+        "NumUnitNogoodsLearned": 0,
+        "AverageLearnedNogoodLength": 0,
+        "AverageBacktrackAmount": 0,
+        "AverageLbd": 0,
+        "nSolutions": 1
+      },
+      "errors": [],
+      "parse_errors": [],
+      "stdout": "{\"type\": \"statistics\", \"statistics\": {\"paths\": 0, \"flatIntVars\": 64, \"flatIntConstraints\": 2, \"method\": \"satisfy\", \"flatTime\": 0.25247}}\n{\"type\": \"statistics\", \"statistics\": {\"nodes\": 1, \"restarts\": 0, \"peakDepth\": 1, \"solveTime\": 0.009865199999999999, \"variables\": 66, \"propagators\": 3, \"failures\": 0, \"propagations\": 8, \"nogoods\": 0, \"AverageConflictSize\": 0, \"NumUnitNogoodsLearned\": 0, \"AverageLearnedNogoodLength\": 0, \"AverageBacktrackAmount\": 0, \"AverageLbd\": 0}}\n{\"type\": \"solution\", \"output\": {\"default\": \"Polyominoes Solution:\\nB A B B B B B B\\nB B A B B B B B\\nB B B A B B B B\\nB B B B A B B B\\nB B B B B A B B\\nB B B B B B A B\\nB B B B B B B A\\nB B B B B B B B\\n\\nSummary: Used 2 tiles on a 8x8 board.\\n\", \"raw\": \"Polyominoes Solution:\\nB A B B B B B B\\nB B A B B B B B\\nB B B A B B B B\\nB B B B A B B B\\nB B B B B A B B\\nB B B B B B A B\\nB B B B B B B A\\nB B B B B B B B\\n\\nSummary: Used 2 tiles on a 8x8 board.\\n\"}, \"sections\": [\"default\", \"raw\"]}\n{\"type\": \"statistics\", \"statistics\": {\"nSolutions\": 1}}\n",
+      "stderr": ""
+    },
+    "dfa": {
+      "solver_id": "nl.tudelft.algorithmics.pumpkin-regular",
+      "dzn": "instances_dzn/dfa/0_low_blowup/polyominoes_50.dzn",
+      "status": "SATISFIED",
+      "exit_code": 0,
+      "stats": {
+        "paths": 0,
+        "flatIntVars": 64,
+        "flatIntConstraints": 2,
+        "method": "satisfy",
+        "flatTime": 0.243569,
+        "nodes": 1,
+        "restarts": 0,
+        "peakDepth": 1,
+        "solveTime": 0.0091423,
+        "variables": 66,
+        "propagators": 3,
+        "failures": 0,
+        "propagations": 8,
+        "nogoods": 0,
+        "AverageConflictSize": 0,
+        "NumUnitNogoodsLearned": 0,
+        "AverageLearnedNogoodLength": 0,
+        "AverageBacktrackAmount": 0,
+        "AverageLbd": 0,
+        "nSolutions": 1
+      },
+      "errors": [],
+      "parse_errors": [],
+      "stdout": "{\"type\": \"statistics\", \"statistics\": {\"paths\": 0, \"flatIntVars\": 64, \"flatIntConstraints\": 2, \"method\": \"satisfy\", \"flatTime\": 0.243569}}\n{\"type\": \"statistics\", \"statistics\": {\"nodes\": 1, \"restarts\": 0, \"peakDepth\": 1, \"solveTime\": 0.009142300000000001, \"variables\": 66, \"propagators\": 3, \"failures\": 0, \"propagations\": 8, \"nogoods\": 0, \"AverageConflictSize\": 0, \"NumUnitNogoodsLearned\": 0, \"AverageLearnedNogoodLength\": 0, \"AverageBacktrackAmount\": 0, \"AverageLbd\": 0}}\n{\"type\": \"solution\", \"output\": {\"default\": \"Polyominoes Solution:\\nB A B B B B B B\\nB B A B B B B B\\nB B B A B B B B\\nB B B B A B B B\\nB B B B B A B B\\nB B B B B B A B\\nB B B B B B B A\\nB B B B B B B B\\n\\nSummary: Used 2 tiles on a 8x8 board.\\n\", \"raw\": \"Polyominoes Solution:\\nB A B B B B B B\\nB B A B B B B B\\nB B B A B B B B\\nB B B B A B B B\\nB B B B B A B B\\nB B B B B B A B\\nB B B B B B B A\\nB B B B B B B B\\n\\nSummary: Used 2 tiles on a 8x8 board.\\n\"}, \"sections\": [\"default\", \"raw\"]}\n{\"type\": \"statistics\", \"statistics\": {\"nSolutions\": 1}}\n",
+      "stderr": ""
+    },
+    "decomposition": {
+      "solver_id": "nl.tudelft.algorithmics.pumpkin-decomposition",
+      "dzn": "instances_dzn/dfa/0_low_blowup/polyominoes_50.dzn",
+      "status": "SATISFIED",
+      "exit_code": 0,
+      "stats": {
+        "paths": 0,
+        "flatIntVars": 348,
+        "flatIntConstraints": 286,
+        "method": "satisfy",
+        "flatTime": 0.24611,
+        "nodes": 1,
+        "restarts": 0,
+        "peakDepth": 1,
+        "solveTime": 0.0004944,
+        "variables": 600,
+        "propagators": 413,
+        "failures": 0,
+        "propagations": 2513,
+        "nogoods": 0,
+        "AverageConflictSize": 0,
+        "NumUnitNogoodsLearned": 0,
+        "AverageLearnedNogoodLength": 0,
+        "AverageBacktrackAmount": 0,
+        "AverageLbd": 0,
+        "nSolutions": 1
+      },
+      "errors": [],
+      "parse_errors": [],
+      "stdout": "{\"type\": \"statistics\", \"statistics\": {\"paths\": 0, \"flatIntVars\": 348, \"flatIntConstraints\": 286, \"method\": \"satisfy\", \"flatTime\": 0.24611}}\n{\"type\": \"statistics\", \"statistics\": {\"nodes\": 1, \"restarts\": 0, \"peakDepth\": 1, \"solveTime\": 0.0004944, \"variables\": 600, \"propagators\": 413, \"failures\": 0, \"propagations\": 2513, \"nogoods\": 0, \"AverageConflictSize\": 0, \"NumUnitNogoodsLearned\": 0, \"AverageLearnedNogoodLength\": 0, \"AverageBacktrackAmount\": 0, \"AverageLbd\": 0}}\n{\"type\": \"solution\", \"output\": {\"default\": \"Polyominoes Solution:\\nB A B B B B B B\\nB B A B B B B B\\nB B B A B B B B\\nB B B B A B B B\\nB B B B B A B B\\nB B B B B B A B\\nB B B B B B B A\\nB B B B B B B B\\n\\nSummary: Used 2 tiles on a 8x8 board.\\n\", \"raw\": \"Polyominoes Solution:\\nB A B B B B B B\\nB B A B B B B B\\nB B B A B B B B\\nB B B B A B B B\\nB B B B B A B B\\nB B B B B B A B\\nB B B B B B B A\\nB B B B B B B B\\n\\nSummary: Used 2 tiles on a 8x8 board.\\n\"}, \"sections\": [\"default\", \"raw\"]}\n{\"type\": \"statistics\", \"statistics\": {\"nSolutions\": 1}}\n",
+      "stderr": ""
+    }
+  }
+}

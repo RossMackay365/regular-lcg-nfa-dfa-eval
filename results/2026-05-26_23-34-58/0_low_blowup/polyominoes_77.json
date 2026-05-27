@@ -1,0 +1,220 @@
+{
+  "instance": "polyominoes_77",
+  "problem_type": "polyominoes",
+  "blowup_bin": "0_low_blowup",
+  "blowup": 0.7709090909090909,
+  "timeout_seconds": 600,
+  "model": "models/polyominoes.mzn",
+  "construction": {
+    "nfa_glushkov": {
+      "ms": [
+        39.368500001728535,
+        13.6627000028966,
+        8.589800010668114,
+        5.034000001614913,
+        19.93890000449028,
+        4.9270000017713755,
+        8.623799993074499,
+        8.689199996297248,
+        4.938300000503659,
+        4.978599987225607
+      ],
+      "ms_total": 118.75080000027083,
+      "states": [
+        1145,
+        473,
+        310,
+        187,
+        625,
+        187,
+        313,
+        313,
+        187,
+        187
+      ],
+      "states_total": 3927
+    },
+    "nfa_rbisim": {
+      "ms": [
+        5371.448200006853,
+        957.9521999985445,
+        311.83429999509826,
+        142.5440000020899,
+        1826.8813000031514,
+        124.25530000473373,
+        367.699199996423,
+        357.7289999957429,
+        137.0872999978019,
+        127.62199999997392
+      ],
+      "ms_total": 9725.052800000412,
+      "states": [
+        112,
+        34,
+        19,
+        11,
+        22,
+        11,
+        22,
+        22,
+        11,
+        11
+      ],
+      "states_total": 275
+    },
+    "dfa_subset": {
+      "ms": [
+        128.35240000276826,
+        14.414699995541014,
+        7.883500002208166,
+        3.67289999849163,
+        12.43889999750536,
+        3.6921999999321997,
+        8.645100009744056,
+        8.584800001699477,
+        3.492599993478507,
+        3.7632000021403655
+      ],
+      "ms_total": 194.94030000350904,
+      "states": [
+        768,
+        225,
+        156,
+        94,
+        179,
+        94,
+        179,
+        179,
+        94,
+        94
+      ],
+      "states_total": 2062
+    },
+    "dfa_min": {
+      "ms": [
+        3613.2819000049494,
+        215.76310000091325,
+        103.15229999832809,
+        22.33130000240635,
+        129.9555000005057,
+        21.325099995010532,
+        93.51889998652041,
+        92.95700000075158,
+        21.822599999723025,
+        33.136199999717064
+      ],
+      "ms_total": 4347.243899988825,
+      "states": [
+        73,
+        31,
+        17,
+        10,
+        17,
+        10,
+        17,
+        17,
+        10,
+        10
+      ],
+      "states_total": 212
+    }
+  },
+  "configs": {
+    "nfa": {
+      "solver_id": "nl.tudelft.algorithmics.pumpkin-regular",
+      "dzn": "instances_dzn/nfa/0_low_blowup/polyominoes_77.dzn",
+      "status": "SATISFIED",
+      "exit_code": 0,
+      "stats": {
+        "paths": 0,
+        "flatIntVars": 36,
+        "flatIntConstraints": 10,
+        "method": "satisfy",
+        "flatTime": 0.312517,
+        "nodes": 14,
+        "restarts": 0,
+        "peakDepth": 14,
+        "solveTime": 0.9101976,
+        "variables": 38,
+        "propagators": 11,
+        "failures": 0,
+        "propagations": 238,
+        "nogoods": 0,
+        "AverageConflictSize": 0,
+        "NumUnitNogoodsLearned": 0,
+        "AverageLearnedNogoodLength": 0,
+        "AverageBacktrackAmount": 0,
+        "AverageLbd": 0,
+        "nSolutions": 1
+      },
+      "errors": [],
+      "parse_errors": [],
+      "stdout": "{\"type\": \"statistics\", \"statistics\": {\"paths\": 0, \"flatIntVars\": 36, \"flatIntConstraints\": 10, \"method\": \"satisfy\", \"flatTime\": 0.312517}}\n{\"type\": \"statistics\", \"statistics\": {\"nodes\": 14, \"restarts\": 0, \"peakDepth\": 14, \"solveTime\": 0.9101976000000001, \"variables\": 38, \"propagators\": 11, \"failures\": 0, \"propagations\": 238, \"nogoods\": 0, \"AverageConflictSize\": 0, \"NumUnitNogoodsLearned\": 0, \"AverageLearnedNogoodLength\": 0, \"AverageBacktrackAmount\": 0, \"AverageLbd\": 0}}\n{\"type\": \"solution\", \"output\": {\"default\": \"Polyominoes Solution:\\nA A A B B C\\nA A A A B B\\nC A D D E B\\nB C F F E E\\nB B G G H H\\nI I J J G H\\n\\nSummary: Used 10 tiles on a 6x6 board.\\n\", \"raw\": \"Polyominoes Solution:\\nA A A B B C\\nA A A A B B\\nC A D D E B\\nB C F F E E\\nB B G G H H\\nI I J J G H\\n\\nSummary: Used 10 tiles on a 6x6 board.\\n\"}, \"sections\": [\"default\", \"raw\"]}\n{\"type\": \"statistics\", \"statistics\": {\"nSolutions\": 1}}\n",
+      "stderr": ""
+    },
+    "dfa": {
+      "solver_id": "nl.tudelft.algorithmics.pumpkin-regular",
+      "dzn": "instances_dzn/dfa/0_low_blowup/polyominoes_77.dzn",
+      "status": "SATISFIED",
+      "exit_code": 0,
+      "stats": {
+        "paths": 0,
+        "flatIntVars": 36,
+        "flatIntConstraints": 10,
+        "method": "satisfy",
+        "flatTime": 0.262649,
+        "nodes": 14,
+        "restarts": 0,
+        "peakDepth": 14,
+        "solveTime": 0.7268998,
+        "variables": 38,
+        "propagators": 11,
+        "failures": 0,
+        "propagations": 238,
+        "nogoods": 0,
+        "AverageConflictSize": 0,
+        "NumUnitNogoodsLearned": 0,
+        "AverageLearnedNogoodLength": 0,
+        "AverageBacktrackAmount": 0,
+        "AverageLbd": 0,
+        "nSolutions": 1
+      },
+      "errors": [],
+      "parse_errors": [],
+      "stdout": "{\"type\": \"statistics\", \"statistics\": {\"paths\": 0, \"flatIntVars\": 36, \"flatIntConstraints\": 10, \"method\": \"satisfy\", \"flatTime\": 0.262649}}\n{\"type\": \"statistics\", \"statistics\": {\"nodes\": 14, \"restarts\": 0, \"peakDepth\": 14, \"solveTime\": 0.7268998, \"variables\": 38, \"propagators\": 11, \"failures\": 0, \"propagations\": 238, \"nogoods\": 0, \"AverageConflictSize\": 0, \"NumUnitNogoodsLearned\": 0, \"AverageLearnedNogoodLength\": 0, \"AverageBacktrackAmount\": 0, \"AverageLbd\": 0}}\n{\"type\": \"solution\", \"output\": {\"default\": \"Polyominoes Solution:\\nA A A B B C\\nA A A A B B\\nC A D D E B\\nB C F F E E\\nB B G G H H\\nI I J J G H\\n\\nSummary: Used 10 tiles on a 6x6 board.\\n\", \"raw\": \"Polyominoes Solution:\\nA A A B B C\\nA A A A B B\\nC A D D E B\\nB C F F E E\\nB B G G H H\\nI I J J G H\\n\\nSummary: Used 10 tiles on a 6x6 board.\\n\"}, \"sections\": [\"default\", \"raw\"]}\n{\"type\": \"statistics\", \"statistics\": {\"nSolutions\": 1}}\n",
+      "stderr": ""
+    },
+    "decomposition": {
+      "solver_id": "nl.tudelft.algorithmics.pumpkin-decomposition",
+      "dzn": "instances_dzn/dfa/0_low_blowup/polyominoes_77.dzn",
+      "status": "SATISFIED",
+      "exit_code": 0,
+      "stats": {
+        "paths": 0,
+        "flatIntVars": 856,
+        "flatIntConstraints": 830,
+        "method": "satisfy",
+        "flatTime": 0.328694,
+        "nodes": 15,
+        "restarts": 0,
+        "peakDepth": 14,
+        "solveTime": 0.0097935,
+        "variables": 931,
+        "propagators": 1181,
+        "failures": 1,
+        "propagations": 11483,
+        "nogoods": 1,
+        "AverageConflictSize": 242,
+        "NumUnitNogoodsLearned": 0,
+        "AverageLearnedNogoodLength": 783,
+        "AverageBacktrackAmount": 0,
+        "AverageLbd": 5,
+        "nSolutions": 1
+      },
+      "errors": [],
+      "parse_errors": [],
+      "stdout": "{\"type\": \"statistics\", \"statistics\": {\"paths\": 0, \"flatIntVars\": 856, \"flatIntConstraints\": 830, \"method\": \"satisfy\", \"flatTime\": 0.328694}}\n{\"type\": \"statistics\", \"statistics\": {\"nodes\": 15, \"restarts\": 0, \"peakDepth\": 14, \"solveTime\": 0.0097935, \"variables\": 931, \"propagators\": 1181, \"failures\": 1, \"propagations\": 11483, \"nogoods\": 1, \"AverageConflictSize\": 242, \"NumUnitNogoodsLearned\": 0, \"AverageLearnedNogoodLength\": 783, \"AverageBacktrackAmount\": 0, \"AverageLbd\": 5}}\n{\"type\": \"solution\", \"output\": {\"default\": \"Polyominoes Solution:\\nA A A B B C\\nA A A A B B\\nC A D D E B\\nB C F F E E\\nB B G G H H\\nI I J J G H\\n\\nSummary: Used 10 tiles on a 6x6 board.\\n\", \"raw\": \"Polyominoes Solution:\\nA A A B B C\\nA A A A B B\\nC A D D E B\\nB C F F E E\\nB B G G H H\\nI I J J G H\\n\\nSummary: Used 10 tiles on a 6x6 board.\\n\"}, \"sections\": [\"default\", \"raw\"]}\n{\"type\": \"statistics\", \"statistics\": {\"nSolutions\": 1}}\n",
+      "stderr": ""
+    }
+  }
+}
