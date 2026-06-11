@@ -1,0 +1,187 @@
+{
+  "instance": "regex_2",
+  "problem_type": "regex",
+  "blowup_bin": "1_medium_blowup",
+  "blowup": 3.8095238095238093,
+  "timeout_seconds": 600,
+  "model": "models/regex.mzn",
+  "construction": {
+    "nfa_glushkov": {
+      "ms": [
+        1.2933000107295811,
+        0.966200022958219
+      ],
+      "ms_total": 2.2595000336878,
+      "states": [
+        18,
+        22
+      ],
+      "states_total": 40
+    },
+    "nfa_rbisim": {
+      "ms": [
+        1.38819997664541,
+        2.5355000398121774
+      ],
+      "ms_total": 3.9237000164575875,
+      "states": [
+        10,
+        11
+      ],
+      "states_total": 21
+    },
+    "dfa_subset": {
+      "ms": [
+        1.095400017220527,
+        0.19599997904151678
+      ],
+      "ms_total": 1.2913999962620437,
+      "states": [
+        69,
+        22
+      ],
+      "states_total": 91
+    },
+    "dfa_min": {
+      "ms": [
+        5.579799995757639,
+        1.0383999906480312
+      ],
+      "ms_total": 6.618199986405671,
+      "states": [
+        68,
+        12
+      ],
+      "states_total": 80
+    }
+  },
+  "configs": {
+    "nfa": {
+      "solver_id": "nl.tudelft.algorithmics.pumpkin-regular",
+      "dzn": "instances_dzn/nfa/1_medium_blowup/regex_2.dzn",
+      "status": "SATISFIED",
+      "exit_code": 0,
+      "stats": {
+        "paths": 0,
+        "flatIntVars": 20,
+        "flatIntConstraints": 3,
+        "method": "maximize",
+        "flatTime": 0.252572,
+        "initTime": 0.0130544,
+        "objective": 177,
+        "nodes": 422,
+        "restarts": 0,
+        "peakDepth": 8,
+        "solveTime": 0.1358688,
+        "variables": 21,
+        "propagators": 5,
+        "failures": 343,
+        "propagations": 3362,
+        "nogoods": 343,
+        "numAtomicConstraintsPropagated": 0,
+        "regularNfaPropagatorNumber1LayeredMultigraphSyncTimeNs": 10707700,
+        "regularNfaPropagatorNumber2LayeredMultigraphSyncTimeNs": 48841400,
+        "AverageConflictSize": 10.842565597667638,
+        "NumUnitNogoodsLearned": 1,
+        "AverageLearnedNogoodLength": 4.48396501457726,
+        "AverageBacktrackAmount": 0,
+        "AverageLbd": 4.48396501457726,
+        "2AutonomousSearchNumBackupCalled": 0,
+        "2AutonomousSearchNumPredicatesRemoved": 0,
+        "2AutonomousSearchNumCalls": 13,
+        "2AutonomousSearchNumPredicatesAdded": 294,
+        "2AutonomousSearchAverageSizeOfHeap": 33.92307692307692,
+        "2AutonomousSearchNumAssignedPredicatesEncountered": 441,
+        "nSolutions": 1
+      },
+      "layered_multigraph_sync_ms": 59.5491,
+      "errors": [],
+      "stdout": "% Generated FlatZinc statistics:\n%%%mzn-stat: paths=0\n%%%mzn-stat: flatIntVars=20\n%%%mzn-stat: flatIntConstraints=3\n%%%mzn-stat: method=\"maximize\"\n%%%mzn-stat: flatTime=0.252572\n%%%mzn-stat-end\n% Logging successfully configured\n%%%mzn-stat: initTime=0.0130544\n%%%mzn-stat: objective=177\n%%%mzn-stat: nodes=422\n%%%mzn-stat: restarts=0\n%%%mzn-stat: peakDepth=8\n%%%mzn-stat: solveTime=0.1358688\n%%%mzn-stat: variables=21\n%%%mzn-stat: propagators=5\n%%%mzn-stat: failures=343\n%%%mzn-stat: propagations=3362\n%%%mzn-stat: nogoods=343\n%%%mzn-stat: numAtomicConstraintsPropagated=0\n%%%mzn-stat: regularNfaPropagatorNumber1LayeredMultigraphSyncTimeNs=10707700\n%%%mzn-stat: regularNfaPropagatorNumber2LayeredMultigraphSyncTimeNs=48841400\n%%%mzn-stat: AverageConflictSize=10.842565597667638\n%%%mzn-stat: NumUnitNogoodsLearned=1\n%%%mzn-stat: AverageLearnedNogoodLength=4.48396501457726\n%%%mzn-stat: AverageBacktrackAmount=0\n%%%mzn-stat: AverageLbd=4.48396501457726\n%%%mzn-stat: 2AutonomousSearchNumBackupCalled=0\n%%%mzn-stat: 2AutonomousSearchNumPredicatesRemoved=0\n%%%mzn-stat: 2AutonomousSearchNumCalls=13\n%%%mzn-stat: 2AutonomousSearchNumPredicatesAdded=294\n%%%mzn-stat: 2AutonomousSearchAverageSizeOfHeap=33.92307692307692\n%%%mzn-stat: 2AutonomousSearchNumAssignedPredicatesEncountered=441\n%%%mzn-stat-end\nvariables = [1, 1, 2, 1, 2, 2, 1, 2, 2, 1, 1, 2, 1, 2, 2, 2, 2, 1, 1];\n----------\n==========\n%%%mzn-stat: initTime=0.0130544\n%%%mzn-stat: objective=177\n%%%mzn-stat: nodes=422\n%%%mzn-stat: restarts=0\n%%%mzn-stat: peakDepth=8\n%%%mzn-stat: solveTime=0.1358688\n%%%mzn-stat: variables=21\n%%%mzn-stat: propagators=5\n%%%mzn-stat: failures=343\n%%%mzn-stat: propagations=3362\n%%%mzn-stat: nogoods=343\n%%%mzn-stat: numAtomicConstraintsPropagated=0\n%%%mzn-stat: regularNfaPropagatorNumber1LayeredMultigraphSyncTimeNs=10707700\n%%%mzn-stat: regularNfaPropagatorNumber2LayeredMultigraphSyncTimeNs=48841400\n%%%mzn-stat: AverageConflictSize=10.842565597667638\n%%%mzn-stat: NumUnitNogoodsLearned=1\n%%%mzn-stat: AverageLearnedNogoodLength=4.48396501457726\n%%%mzn-stat: AverageBacktrackAmount=0\n%%%mzn-stat: AverageLbd=4.48396501457726\n%%%mzn-stat: 2AutonomousSearchNumBackupCalled=0\n%%%mzn-stat: 2AutonomousSearchNumPredicatesRemoved=0\n%%%mzn-stat: 2AutonomousSearchNumCalls=13\n%%%mzn-stat: 2AutonomousSearchNumPredicatesAdded=294\n%%%mzn-stat: 2AutonomousSearchAverageSizeOfHeap=33.92307692307692\n%%%mzn-stat: 2AutonomousSearchNumAssignedPredicatesEncountered=441\n%%%mzn-stat-end\n%%%mzn-stat: nSolutions=1\n%%%mzn-stat-end\n",
+      "stderr": ""
+    },
+    "dfa": {
+      "solver_id": "nl.tudelft.algorithmics.pumpkin-regular",
+      "dzn": "instances_dzn/dfa/1_medium_blowup/regex_2.dzn",
+      "status": "SATISFIED",
+      "exit_code": 0,
+      "stats": {
+        "paths": 0,
+        "flatIntVars": 20,
+        "flatIntConstraints": 3,
+        "method": "maximize",
+        "flatTime": 0.268669,
+        "initTime": 0.0215505,
+        "objective": 177,
+        "nodes": 422,
+        "restarts": 0,
+        "peakDepth": 8,
+        "solveTime": 0.3711506,
+        "variables": 21,
+        "propagators": 5,
+        "failures": 343,
+        "propagations": 3361,
+        "nogoods": 343,
+        "numAtomicConstraintsPropagated": 0,
+        "regularDfaPropagatorNumber1LayeredMultigraphSyncTimeNs": 155616600,
+        "regularDfaPropagatorNumber2LayeredMultigraphSyncTimeNs": 50362300,
+        "AverageConflictSize": 10.842565597667638,
+        "NumUnitNogoodsLearned": 1,
+        "AverageLearnedNogoodLength": 4.48396501457726,
+        "AverageBacktrackAmount": 0,
+        "AverageLbd": 4.48396501457726,
+        "2AutonomousSearchNumBackupCalled": 0,
+        "2AutonomousSearchNumPredicatesRemoved": 0,
+        "2AutonomousSearchNumCalls": 13,
+        "2AutonomousSearchNumPredicatesAdded": 294,
+        "2AutonomousSearchAverageSizeOfHeap": 33.92307692307692,
+        "2AutonomousSearchNumAssignedPredicatesEncountered": 441,
+        "nSolutions": 1
+      },
+      "layered_multigraph_sync_ms": 205.9789,
+      "errors": [],
+      "stdout": "% Generated FlatZinc statistics:\n%%%mzn-stat: paths=0\n%%%mzn-stat: flatIntVars=20\n%%%mzn-stat: flatIntConstraints=3\n%%%mzn-stat: method=\"maximize\"\n%%%mzn-stat: flatTime=0.268669\n%%%mzn-stat-end\n% Logging successfully configured\n%%%mzn-stat: initTime=0.0215505\n%%%mzn-stat: objective=177\n%%%mzn-stat: nodes=422\n%%%mzn-stat: restarts=0\n%%%mzn-stat: peakDepth=8\n%%%mzn-stat: solveTime=0.3711506\n%%%mzn-stat: variables=21\n%%%mzn-stat: propagators=5\n%%%mzn-stat: failures=343\n%%%mzn-stat: propagations=3361\n%%%mzn-stat: nogoods=343\n%%%mzn-stat: numAtomicConstraintsPropagated=0\n%%%mzn-stat: regularDfaPropagatorNumber1LayeredMultigraphSyncTimeNs=155616600\n%%%mzn-stat: regularDfaPropagatorNumber2LayeredMultigraphSyncTimeNs=50362300\n%%%mzn-stat: AverageConflictSize=10.842565597667638\n%%%mzn-stat: NumUnitNogoodsLearned=1\n%%%mzn-stat: AverageLearnedNogoodLength=4.48396501457726\n%%%mzn-stat: AverageBacktrackAmount=0\n%%%mzn-stat: AverageLbd=4.48396501457726\n%%%mzn-stat: 2AutonomousSearchNumBackupCalled=0\n%%%mzn-stat: 2AutonomousSearchNumPredicatesRemoved=0\n%%%mzn-stat: 2AutonomousSearchNumCalls=13\n%%%mzn-stat: 2AutonomousSearchNumPredicatesAdded=294\n%%%mzn-stat: 2AutonomousSearchAverageSizeOfHeap=33.92307692307692\n%%%mzn-stat: 2AutonomousSearchNumAssignedPredicatesEncountered=441\n%%%mzn-stat-end\nvariables = [1, 1, 2, 1, 2, 2, 1, 2, 2, 1, 1, 2, 1, 2, 2, 2, 2, 1, 1];\n----------\n==========\n%%%mzn-stat: initTime=0.0215505\n%%%mzn-stat: objective=177\n%%%mzn-stat: nodes=422\n%%%mzn-stat: restarts=0\n%%%mzn-stat: peakDepth=8\n%%%mzn-stat: solveTime=0.3711506\n%%%mzn-stat: variables=21\n%%%mzn-stat: propagators=5\n%%%mzn-stat: failures=343\n%%%mzn-stat: propagations=3361\n%%%mzn-stat: nogoods=343\n%%%mzn-stat: numAtomicConstraintsPropagated=0\n%%%mzn-stat: regularDfaPropagatorNumber1LayeredMultigraphSyncTimeNs=155616600\n%%%mzn-stat: regularDfaPropagatorNumber2LayeredMultigraphSyncTimeNs=50362300\n%%%mzn-stat: AverageConflictSize=10.842565597667638\n%%%mzn-stat: NumUnitNogoodsLearned=1\n%%%mzn-stat: AverageLearnedNogoodLength=4.48396501457726\n%%%mzn-stat: AverageBacktrackAmount=0\n%%%mzn-stat: AverageLbd=4.48396501457726\n%%%mzn-stat: 2AutonomousSearchNumBackupCalled=0\n%%%mzn-stat: 2AutonomousSearchNumPredicatesRemoved=0\n%%%mzn-stat: 2AutonomousSearchNumCalls=13\n%%%mzn-stat: 2AutonomousSearchNumPredicatesAdded=294\n%%%mzn-stat: 2AutonomousSearchAverageSizeOfHeap=33.92307692307692\n%%%mzn-stat: 2AutonomousSearchNumAssignedPredicatesEncountered=441\n%%%mzn-stat-end\n%%%mzn-stat: nSolutions=1\n%%%mzn-stat-end\n",
+      "stderr": ""
+    },
+    "decomposition": {
+      "solver_id": "nl.tudelft.algorithmics.pumpkin-decomposition",
+      "dzn": "instances_dzn/dfa/1_medium_blowup/regex_2.dzn",
+      "status": "SATISFIED",
+      "exit_code": 0,
+      "stats": {
+        "paths": 0,
+        "flatIntVars": 93,
+        "flatIntConstraints": 75,
+        "method": "maximize",
+        "flatTime": 0.246424,
+        "initTime": 0.0259916,
+        "objective": 177,
+        "nodes": 951,
+        "restarts": 0,
+        "peakDepth": 9,
+        "solveTime": 0.65802,
+        "variables": 163,
+        "propagators": 113,
+        "failures": 870,
+        "propagations": 150373,
+        "nogoods": 870,
+        "numAtomicConstraintsPropagated": 0,
+        "AverageConflictSize": 43.8448275862069,
+        "NumUnitNogoodsLearned": 1,
+        "AverageLearnedNogoodLength": 6.1931034482758625,
+        "AverageBacktrackAmount": 0,
+        "AverageLbd": 5.427586206896552,
+        "2AutonomousSearchNumBackupCalled": 0,
+        "2AutonomousSearchNumPredicatesRemoved": 0,
+        "2AutonomousSearchNumCalls": 13,
+        "2AutonomousSearchNumPredicatesAdded": 19161,
+        "2AutonomousSearchAverageSizeOfHeap": 2295.3076923076924,
+        "2AutonomousSearchNumAssignedPredicatesEncountered": 29839,
+        "nSolutions": 1
+      },
+      "layered_multigraph_sync_ms": null,
+      "errors": [],
+      "stdout": "% Generated FlatZinc statistics:\n%%%mzn-stat: paths=0\n%%%mzn-stat: flatIntVars=93\n%%%mzn-stat: flatIntConstraints=75\n%%%mzn-stat: method=\"maximize\"\n%%%mzn-stat: flatTime=0.246424\n%%%mzn-stat-end\n% Logging successfully configured\n%%%mzn-stat: initTime=0.0259916\n%%%mzn-stat: objective=177\n%%%mzn-stat: nodes=951\n%%%mzn-stat: restarts=0\n%%%mzn-stat: peakDepth=9\n%%%mzn-stat: solveTime=0.65802\n%%%mzn-stat: variables=163\n%%%mzn-stat: propagators=113\n%%%mzn-stat: failures=870\n%%%mzn-stat: propagations=150373\n%%%mzn-stat: nogoods=870\n%%%mzn-stat: numAtomicConstraintsPropagated=0\n%%%mzn-stat: AverageConflictSize=43.8448275862069\n%%%mzn-stat: NumUnitNogoodsLearned=1\n%%%mzn-stat: AverageLearnedNogoodLength=6.1931034482758625\n%%%mzn-stat: AverageBacktrackAmount=0\n%%%mzn-stat: AverageLbd=5.427586206896552\n%%%mzn-stat: 2AutonomousSearchNumBackupCalled=0\n%%%mzn-stat: 2AutonomousSearchNumPredicatesRemoved=0\n%%%mzn-stat: 2AutonomousSearchNumCalls=13\n%%%mzn-stat: 2AutonomousSearchNumPredicatesAdded=19161\n%%%mzn-stat: 2AutonomousSearchAverageSizeOfHeap=2295.3076923076924\n%%%mzn-stat: 2AutonomousSearchNumAssignedPredicatesEncountered=29839\n%%%mzn-stat-end\nvariables = [1, 1, 2, 1, 2, 2, 1, 2, 2, 1, 1, 2, 1, 2, 2, 2, 2, 1, 1];\n----------\n==========\n%%%mzn-stat: initTime=0.0259916\n%%%mzn-stat: objective=177\n%%%mzn-stat: nodes=951\n%%%mzn-stat: restarts=0\n%%%mzn-stat: peakDepth=9\n%%%mzn-stat: solveTime=0.65802\n%%%mzn-stat: variables=163\n%%%mzn-stat: propagators=113\n%%%mzn-stat: failures=870\n%%%mzn-stat: propagations=150373\n%%%mzn-stat: nogoods=870\n%%%mzn-stat: numAtomicConstraintsPropagated=0\n%%%mzn-stat: AverageConflictSize=43.8448275862069\n%%%mzn-stat: NumUnitNogoodsLearned=1\n%%%mzn-stat: AverageLearnedNogoodLength=6.1931034482758625\n%%%mzn-stat: AverageBacktrackAmount=0\n%%%mzn-stat: AverageLbd=5.427586206896552\n%%%mzn-stat: 2AutonomousSearchNumBackupCalled=0\n%%%mzn-stat: 2AutonomousSearchNumPredicatesRemoved=0\n%%%mzn-stat: 2AutonomousSearchNumCalls=13\n%%%mzn-stat: 2AutonomousSearchNumPredicatesAdded=19161\n%%%mzn-stat: 2AutonomousSearchAverageSizeOfHeap=2295.3076923076924\n%%%mzn-stat: 2AutonomousSearchNumAssignedPredicatesEncountered=29839\n%%%mzn-stat-end\n%%%mzn-stat: nSolutions=1\n%%%mzn-stat-end\n",
+      "stderr": ""
+    }
+  }
+}

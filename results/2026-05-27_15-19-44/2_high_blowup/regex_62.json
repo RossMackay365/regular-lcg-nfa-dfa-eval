@@ -1,0 +1,160 @@
+{
+  "instance": "regex_62",
+  "problem_type": "regex",
+  "blowup_bin": "2_high_blowup",
+  "blowup": 38.75,
+  "timeout_seconds": 600,
+  "model": "models/regex.mzn",
+  "construction": {
+    "nfa_glushkov": {
+      "ms": [
+        0.7425000076182187
+      ],
+      "ms_total": 0.7425000076182187,
+      "states": [
+        23
+      ],
+      "states_total": 23
+    },
+    "nfa_rbisim": {
+      "ms": [
+        1.3675000082002953
+      ],
+      "ms_total": 1.3675000082002953,
+      "states": [
+        12
+      ],
+      "states_total": 12
+    },
+    "dfa_subset": {
+      "ms": [
+        12.464200000977144
+      ],
+      "ms_total": 12.464200000977144,
+      "states": [
+        466
+      ],
+      "states_total": 466
+    },
+    "dfa_min": {
+      "ms": [
+        540.8192000031704
+      ],
+      "ms_total": 540.8192000031704,
+      "states": [
+        465
+      ],
+      "states_total": 465
+    }
+  },
+  "configs": {
+    "nfa": {
+      "solver_id": "nl.tudelft.algorithmics.pumpkin-regular",
+      "dzn": "instances_dzn/nfa/2_high_blowup/regex_62.dzn",
+      "status": "OPTIMAL",
+      "exit_code": 0,
+      "objective": 176,
+      "proven_optimal": true,
+      "stats": {
+        "paths": 0,
+        "flatIntVars": 16,
+        "flatIntConstraints": 2,
+        "method": "maximize",
+        "flatTime": 0.230536,
+        "initTime": 0.0118078,
+        "objective": 176,
+        "nodes": 198,
+        "restarts": 0,
+        "peakDepth": 13,
+        "solveTime": 0.0068717,
+        "variables": 17,
+        "propagators": 4,
+        "failures": 0,
+        "propagations": 670,
+        "nogoods": 0,
+        "AverageConflictSize": 0,
+        "NumUnitNogoodsLearned": 0,
+        "AverageLearnedNogoodLength": 0,
+        "AverageBacktrackAmount": 0,
+        "AverageLbd": 0,
+        "nSolutions": 1
+      },
+      "errors": [],
+      "parse_errors": [],
+      "stdout": "{\"type\": \"statistics\", \"statistics\": {\"paths\": 0, \"flatIntVars\": 16, \"flatIntConstraints\": 2, \"method\": \"maximize\", \"flatTime\": 0.230536}}\n{\"type\": \"statistics\", \"statistics\": {\"initTime\": 0.0118078, \"objective\": 176, \"nodes\": 198, \"restarts\": 0, \"peakDepth\": 13, \"solveTime\": 0.0068717, \"variables\": 17, \"propagators\": 4, \"failures\": 0, \"propagations\": 670, \"nogoods\": 0, \"AverageConflictSize\": 0, \"NumUnitNogoodsLearned\": 0, \"AverageLearnedNogoodLength\": 0, \"AverageBacktrackAmount\": 0, \"AverageLbd\": 0}}\n{\"type\": \"solution\", \"output\": {\"dzn\": \"variables = [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2];\\n\"}, \"sections\": [\"dzn\"]}\n{\"type\": \"status\", \"status\": \"OPTIMAL_SOLUTION\"}\n{\"type\": \"statistics\", \"statistics\": {\"initTime\": 0.0118078, \"objective\": 176, \"nodes\": 198, \"restarts\": 0, \"peakDepth\": 13, \"solveTime\": 0.0068717, \"variables\": 17, \"propagators\": 4, \"failures\": 0, \"propagations\": 670, \"nogoods\": 0, \"AverageConflictSize\": 0, \"NumUnitNogoodsLearned\": 0, \"AverageLearnedNogoodLength\": 0, \"AverageBacktrackAmount\": 0, \"AverageLbd\": 0}}\n{\"type\": \"statistics\", \"statistics\": {\"nSolutions\": 1}}\n",
+      "stderr": ""
+    },
+    "dfa": {
+      "solver_id": "nl.tudelft.algorithmics.pumpkin-regular",
+      "dzn": "instances_dzn/dfa/2_high_blowup/regex_62.dzn",
+      "status": "OPTIMAL",
+      "exit_code": 0,
+      "objective": 176,
+      "proven_optimal": true,
+      "stats": {
+        "paths": 0,
+        "flatIntVars": 16,
+        "flatIntConstraints": 2,
+        "method": "maximize",
+        "flatTime": 0.234063,
+        "initTime": 0.0215884,
+        "objective": 176,
+        "nodes": 198,
+        "restarts": 0,
+        "peakDepth": 13,
+        "solveTime": 0.2439399,
+        "variables": 17,
+        "propagators": 4,
+        "failures": 0,
+        "propagations": 670,
+        "nogoods": 0,
+        "AverageConflictSize": 0,
+        "NumUnitNogoodsLearned": 0,
+        "AverageLearnedNogoodLength": 0,
+        "AverageBacktrackAmount": 0,
+        "AverageLbd": 0,
+        "nSolutions": 1
+      },
+      "errors": [],
+      "parse_errors": [],
+      "stdout": "{\"type\": \"statistics\", \"statistics\": {\"paths\": 0, \"flatIntVars\": 16, \"flatIntConstraints\": 2, \"method\": \"maximize\", \"flatTime\": 0.234063}}\n{\"type\": \"statistics\", \"statistics\": {\"initTime\": 0.0215884, \"objective\": 176, \"nodes\": 198, \"restarts\": 0, \"peakDepth\": 13, \"solveTime\": 0.2439399, \"variables\": 17, \"propagators\": 4, \"failures\": 0, \"propagations\": 670, \"nogoods\": 0, \"AverageConflictSize\": 0, \"NumUnitNogoodsLearned\": 0, \"AverageLearnedNogoodLength\": 0, \"AverageBacktrackAmount\": 0, \"AverageLbd\": 0}}\n{\"type\": \"solution\", \"output\": {\"dzn\": \"variables = [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2];\\n\"}, \"sections\": [\"dzn\"]}\n{\"type\": \"status\", \"status\": \"OPTIMAL_SOLUTION\"}\n{\"type\": \"statistics\", \"statistics\": {\"initTime\": 0.0215884, \"objective\": 176, \"nodes\": 198, \"restarts\": 0, \"peakDepth\": 13, \"solveTime\": 0.2439399, \"variables\": 17, \"propagators\": 4, \"failures\": 0, \"propagations\": 670, \"nogoods\": 0, \"AverageConflictSize\": 0, \"NumUnitNogoodsLearned\": 0, \"AverageLearnedNogoodLength\": 0, \"AverageBacktrackAmount\": 0, \"AverageLbd\": 0}}\n{\"type\": \"statistics\", \"statistics\": {\"nSolutions\": 1}}\n",
+      "stderr": ""
+    },
+    "decomposition": {
+      "solver_id": "nl.tudelft.algorithmics.pumpkin-decomposition",
+      "dzn": "instances_dzn/dfa/2_high_blowup/regex_62.dzn",
+      "status": "OPTIMAL",
+      "exit_code": 0,
+      "objective": 176,
+      "proven_optimal": true,
+      "stats": {
+        "paths": 0,
+        "flatIntVars": 45,
+        "flatIntConstraints": 30,
+        "method": "maximize",
+        "flatTime": 0.216003,
+        "initTime": 0.0253571,
+        "objective": 176,
+        "nodes": 198,
+        "restarts": 0,
+        "peakDepth": 13,
+        "solveTime": 0.0162904,
+        "variables": 511,
+        "propagators": 46,
+        "failures": 0,
+        "propagations": 11980,
+        "nogoods": 0,
+        "AverageConflictSize": 0,
+        "NumUnitNogoodsLearned": 0,
+        "AverageLearnedNogoodLength": 0,
+        "AverageBacktrackAmount": 0,
+        "AverageLbd": 0,
+        "nSolutions": 1
+      },
+      "errors": [],
+      "parse_errors": [],
+      "stdout": "{\"type\": \"statistics\", \"statistics\": {\"paths\": 0, \"flatIntVars\": 45, \"flatIntConstraints\": 30, \"method\": \"maximize\", \"flatTime\": 0.216003}}\n{\"type\": \"statistics\", \"statistics\": {\"initTime\": 0.0253571, \"objective\": 176, \"nodes\": 198, \"restarts\": 0, \"peakDepth\": 13, \"solveTime\": 0.0162904, \"variables\": 511, \"propagators\": 46, \"failures\": 0, \"propagations\": 11980, \"nogoods\": 0, \"AverageConflictSize\": 0, \"NumUnitNogoodsLearned\": 0, \"AverageLearnedNogoodLength\": 0, \"AverageBacktrackAmount\": 0, \"AverageLbd\": 0}}\n{\"type\": \"solution\", \"output\": {\"dzn\": \"variables = [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2];\\n\"}, \"sections\": [\"dzn\"]}\n{\"type\": \"status\", \"status\": \"OPTIMAL_SOLUTION\"}\n{\"type\": \"statistics\", \"statistics\": {\"initTime\": 0.0253571, \"objective\": 176, \"nodes\": 198, \"restarts\": 0, \"peakDepth\": 13, \"solveTime\": 0.0162904, \"variables\": 511, \"propagators\": 46, \"failures\": 0, \"propagations\": 11980, \"nogoods\": 0, \"AverageConflictSize\": 0, \"NumUnitNogoodsLearned\": 0, \"AverageLearnedNogoodLength\": 0, \"AverageBacktrackAmount\": 0, \"AverageLbd\": 0}}\n{\"type\": \"statistics\", \"statistics\": {\"nSolutions\": 1}}\n",
+      "stderr": ""
+    }
+  }
+}
