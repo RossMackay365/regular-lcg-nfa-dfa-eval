@@ -18,21 +18,28 @@ int: var_count;
 
 int: mode; % 0 = DFA, 1 = NFA
 
+int: n_constraints;
 int: Q;
 int: S;
-int: q0;
-set of int: F;
 
-array[1..Q, 1..S] of int: d_dfa;
-array[1..Q, 1..S] of set of int: d_nfa;
+array[1..n_constraints] of int: q0;
+array[1..n_constraints] of set of int: F;
+
+array[1..n_constraints, 1..Q, 1..S] of int: d_dfa;
+array[1..n_constraints, 1..Q, 1..S] of set of int: d_nfa;
+
+array[1..var_count] of int: weights;
 
 array[1..var_count] of var 1..S: variables;
 
-constraint
-    if mode = 0 then
-        regular(variables, Q, S, d_dfa, q0, F)
-    else
-        regular_nfa(variables, Q, S, d_nfa, q0, F)
-    endif;
+var int: objective = sum(i in 1..var_count)(weights[i] * variables[i]);
 
-solve :: int_search(variables, input_order, indomain_min) satisfy;
+constraint forall (e in 1..n_constraints) (
+    if mode = 0 then
+        regular(variables, Q, S, d_dfa[e, 1..Q, 1..S], q0[e], F[e])
+    else
+        regular_nfa(variables, Q, S, d_nfa[e, 1..Q, 1..S], q0[e], F[e])
+    endif
+);
+
+solve :: int_search(variables, input_order, indomain_min) maximize objective;

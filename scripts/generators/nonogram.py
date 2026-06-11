@@ -37,11 +37,7 @@ from scripts.generators.helper import (
 PROBLEM_TYPE = "nonogram"
 S = 2
 SIZE_VALUES = [
-    (5, 5),
-    (10, 5), (10, 10),
-    (15, 10), (15, 15),
-    (20, 15), (20, 20),
-    (25, 20), (25, 25),
+  (25, 25), (25, 30), (30, 30), (30, 35)
 ]
 DENSITY = 0.5
 

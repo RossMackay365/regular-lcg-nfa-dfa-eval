@@ -44,10 +44,9 @@ from scripts.generators.helper import (
 # Constants
 # ---------------------------------------------------------------------------
 PROBLEM_TYPE = "polyominoes"
-
-SIZE_VALUES  = [4, 6, 8]
-TILES_VALUES = [2, 4, 6, 8, 10, 12]
-STRATEGIES   = ["source"]
+SIZE_VALUES  = [6, 8, 10, 12]
+TILES_VALUES = [4, 5, 6]
+STRATEGIES   = ["source", "target", "far", "close"]
 
 _BIN_NAME = "minizinc-pentominoes-generator" + (".exe" if os.name == "nt" else "")
 CLI_PATH  = _ROOT / "minizinc-pentominoes-generator" / "target" / "release" / _BIN_NAME

@@ -1,3 +1,4 @@
+import itertools
 import json
 from datetime import datetime
 from pathlib import Path
@@ -153,3 +154,34 @@ def write_instance(instance):
     with path.open("w") as f:
         f.write(_dump_instance(instance))
     return True
+
+
+# ---------------------------------------------------------------------------
+# Joint Feasibility (intersection of K regular constraints)
+# ---------------------------------------------------------------------------
+def is_jointly_feasible(nfa_tuples, length):
+    if not nfa_tuples:
+        return True
+    S = nfa_tuples[0][1]
+    deltas = [t[2] for t in nfa_tuples]
+    finals = [set(t[4]) for t in nfa_tuples]
+    frontier = {tuple(t[3] for t in nfa_tuples)}
+    for _ in range(length):
+        nxt = set()
+        for tup in frontier:
+            for sym in range(1, S + 1):
+                per_nfa = []
+                ok = True
+                for i, q in enumerate(tup):
+                    targets = deltas[i].get(q, {}).get(sym)
+                    if not targets:
+                        ok = False
+                        break
+                    per_nfa.append(tuple(targets))
+                if ok:
+                    for combo in itertools.product(*per_nfa):
+                        nxt.add(combo)
+        frontier = nxt
+        if not frontier:
+            return False
+    return any(all(c in finals[i] for i, c in enumerate(tup)) for tup in frontier)
