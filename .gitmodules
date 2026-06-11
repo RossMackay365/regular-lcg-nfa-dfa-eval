@@ -1,3 +1,11 @@
 [submodule "minizinc-pentominoes-generator"]
 	path = minizinc-pentominoes-generator
 	url = https://github.com/zayenz/minizinc-pentominoes-generator.git
+[submodule "solvers/pumpkin"]
+	path = solvers/pumpkin
+	url = https://github.com/RossMackay365/Pumpkin.git
+	branch = test/regular-setup
+[submodule "solvers/pumpkin-minimal-explanations"]
+	path = solvers/pumpkin-minimal-explanations
+	url = https://github.com/RossMackay365/Pumpkin.git
+	branch = test/regular-minimal-explanations
