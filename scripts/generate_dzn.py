@@ -10,6 +10,7 @@ These files are then written to the instances_dzn folder.
 """
 
 import json
+import random
 from pathlib import Path
 
 
@@ -19,6 +20,20 @@ from pathlib import Path
 _ROOT = Path(__file__).resolve().parent.parent
 INSTANCES_JSON_ROOT = _ROOT / "instances_json"
 INSTANCES_DZN_ROOT  = _ROOT / "instances_dzn"
+
+# ---------------------------------------------------------------------------
+# Constants
+# ---------------------------------------------------------------------------
+MASTER_SEED = 71
+WEIGHT_MIN  = 1
+WEIGHT_MAX  = 10
+
+# ---------------------------------------------------------------------------
+# Weights Generator
+# ---------------------------------------------------------------------------
+def make_weights(instance_name, count):
+    rng = random.Random(f"{MASTER_SEED}:{instance_name}")
+    return [rng.randint(WEIGHT_MIN, WEIGHT_MAX) for _ in range(count)]
 
 
 # ---------------------------------------------------------------------------
@@ -87,28 +102,43 @@ def flatten_nfa(automaton, Q, S):
 # ---------------------------------------------------------------------------
 
 def build_regex_body(instance, is_dfa):
-    automaton = instance["dfas" if is_dfa else "nfas"][0]
+    automata      = instance["dfas" if is_dfa else "nfas"]
+    n_constraints = len(automata)
+    S             = int(instance["alphabet_size"])
+    var_count     = int(instance["params"]["var_count"])
 
-    Q  = int(automaton["Q"])
-    S  = int(instance["alphabet_size"])
-    q0 = int(automaton["q0"])
-    F  = automaton["F"]
+    Q = max(int(a["Q"]) for a in automata)
+
+    q0 = [int(a["q0"]) for a in automata]
+    F  = [a["F"] for a in automata]
 
     if is_dfa:
-        d_dfa = flatten_dfa(automaton, Q, S)
-        d_nfa = [[] for _ in range(Q * S)]
+        d_dfa = []
+        for a in automata:
+            d_dfa.extend(flatten_dfa(a, Q, S))
+        d_nfa = [[] for _ in range(n_constraints * Q * S)]
     else:
-        d_nfa = flatten_nfa(automaton, Q, S)
-        d_dfa = [0] * (Q * S)
+        d_nfa = []
+        for a in automata:
+            d_nfa.extend(flatten_nfa(a, Q, S))
+        d_dfa = [0] * (n_constraints * Q * S)
+
+    q0_array = "[" + ", ".join(str(x) for x in q0) + "]"
+    F_array  = "[" + ", ".join(fmt_set(f) for f in F) + "]"
+
+    weights = make_weights(instance["name"], var_count)
+    weights_array = "[" + ", ".join(str(w) for w in weights) + "]"
 
     return (
-        f"var_count = {int(instance['params']['var_count'])};\n"
+        f"var_count = {var_count};\n"
+        f"n_constraints = {n_constraints};\n"
         f"Q = {Q};\n"
         f"S = {S};\n"
-        f"q0 = {q0};\n"
-        f"F = {fmt_set(F)};\n"
-        f"d_dfa = {fmt_2d(Q, S, d_dfa, as_sets=False)};\n"
-        f"d_nfa = {fmt_2d(Q, S, d_nfa, as_sets=True)};\n"
+        f"q0 = {q0_array};\n"
+        f"F = {F_array};\n"
+        f"weights = {weights_array};\n"
+        f"d_dfa = {fmt_3d(n_constraints, Q, S, d_dfa, as_sets=False)};\n"
+        f"d_nfa = {fmt_3d(n_constraints, Q, S, d_nfa, as_sets=True)};\n"
     )
 
 
@@ -203,6 +233,9 @@ def build_polyominoes_body(instance, is_dfa):
     q0_array = "[" + ", ".join(str(x) for x in q0) + "]"
     F_array  = "[" + ", ".join(fmt_set(f) for f in F) + "]"
 
+    weights = make_weights(instance["name"], size * size)
+    weights_array = "[" + ", ".join(str(w) for w in weights) + "]"
+
     return (
         f"size = {size};\n"
         f"tiles = {tiles};\n"
@@ -211,6 +244,7 @@ def build_polyominoes_body(instance, is_dfa):
         f"S = {S};\n"
         f"q0 = {q0_array};\n"
         f"F = {F_array};\n"
+        f"weights = {weights_array};\n"
         f"d_dfa = {fmt_3d(n_expressions, Q, S, d_dfa, as_sets=False)};\n"
         f"d_nfa = {fmt_3d(n_expressions, Q, S, d_nfa, as_sets=True)};\n"
     )
