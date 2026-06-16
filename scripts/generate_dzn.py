@@ -233,9 +233,6 @@ def build_polyominoes_body(instance, is_dfa):
     q0_array = "[" + ", ".join(str(x) for x in q0) + "]"
     F_array  = "[" + ", ".join(fmt_set(f) for f in F) + "]"
 
-    weights = make_weights(instance["name"], size * size)
-    weights_array = "[" + ", ".join(str(w) for w in weights) + "]"
-
     return (
         f"size = {size};\n"
         f"tiles = {tiles};\n"
@@ -244,7 +241,6 @@ def build_polyominoes_body(instance, is_dfa):
         f"S = {S};\n"
         f"q0 = {q0_array};\n"
         f"F = {F_array};\n"
-        f"weights = {weights_array};\n"
         f"d_dfa = {fmt_3d(n_expressions, Q, S, d_dfa, as_sets=False)};\n"
         f"d_nfa = {fmt_3d(n_expressions, Q, S, d_nfa, as_sets=True)};\n"
     )

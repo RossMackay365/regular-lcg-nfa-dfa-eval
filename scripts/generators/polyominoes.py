@@ -44,9 +44,8 @@ from scripts.generators.helper import (
 # Constants
 # ---------------------------------------------------------------------------
 PROBLEM_TYPE = "polyominoes"
-SIZE_VALUES  = [6, 8, 10, 12]
-TILES_VALUES = [4, 5, 6]
-STRATEGIES   = ["source", "target", "far", "close"]
+PARAM_PAIRS = [(8, 8)]
+STRATEGIES  = ["source"]
 
 _BIN_NAME = "minizinc-pentominoes-generator" + (".exe" if os.name == "nt" else "")
 CLI_PATH  = _ROOT / "minizinc-pentominoes-generator" / "target" / "release" / _BIN_NAME
@@ -145,9 +144,8 @@ def generate_instances(seed, target_count=100):
         if counter >= target_count:
             break
 
-        size     = rng.choice(SIZE_VALUES)
-        tiles    = rng.choice(TILES_VALUES)
-        strategy = rng.choice(STRATEGIES)
+        size, tiles = rng.choice(PARAM_PAIRS)
+        strategy    = rng.choice(STRATEGIES)
         cli_seed = rng.randrange(2 ** 32)
 
         instance_start = time.perf_counter()
