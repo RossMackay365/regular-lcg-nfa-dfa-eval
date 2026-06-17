@@ -1,0 +1,142 @@
+{
+  "instance": "polyominoes_98",
+  "problem_type": "polyominoes",
+  "blowup_bin": "0_low_blowup",
+  "blowup": 0.7978021978021979,
+  "timeout_seconds": 1200,
+  "model": "models/polyominoes.mzn",
+  "construction": {
+    "nfa_glushkov": {
+      "ms": [
+        19.4978000363335,
+        14.491999987512827,
+        73.50009999936447,
+        130.98899996839464,
+        37.55970002384856,
+        0.5975000094622374,
+        4.086000029928982,
+        34.33009999571368
+      ],
+      "ms_total": 315.0522000505589,
+      "states": [
+        633,
+        513,
+        1641,
+        2433,
+        1089,
+        18,
+        153,
+        1033
+      ],
+      "states_total": 7513
+    },
+    "nfa_rbisim": {
+      "ms": [
+        1698.0875000008382,
+        1066.0613999934867,
+        11818.694300018251,
+        25079.407699988224,
+        4753.994100028649,
+        1.2011000071652234,
+        75.87480003712699,
+        4480.055000050925
+      ],
+      "ms_total": 48973.375900124665,
+      "states": [
+        26,
+        42,
+        241,
+        389,
+        99,
+        2,
+        12,
+        99
+      ],
+      "states_total": 910
+    },
+    "dfa_subset": {
+      "ms": [
+        9.584699990227818,
+        17.896600009407848,
+        340.632600011304,
+        747.90340004256,
+        71.09710003715008,
+        0.2796999760903418,
+        2.252899983432144,
+        63.44220001483336
+      ],
+      "ms_total": 1253.0892000650056,
+      "states": [
+        177,
+        247,
+        1376,
+        2021,
+        646,
+        18,
+        77,
+        611
+      ],
+      "states_total": 5173
+    },
+    "dfa_min": {
+      "ms": [
+        76.16050000069663,
+        248.58910002512857,
+        11328.745400009211,
+        27053.5160000436,
+        2017.1436999808066,
+        0.6031999946571887,
+        17.777999979443848,
+        1755.7891000178643
+      ],
+      "ms_total": 42498.32500005141,
+      "states": [
+        21,
+        39,
+        193,
+        327,
+        65,
+        3,
+        13,
+        65
+      ],
+      "states_total": 726
+    }
+  },
+  "configs": {
+    "nfa": {
+      "solver_id": "nl.tudelft.algorithmics.pumpkin-regular",
+      "dzn": "instances_dzn/nfa/0_low_blowup/polyominoes_98.dzn",
+      "status": "TIMEOUT",
+      "exit_code": null,
+      "stats": {
+        "paths": 0,
+        "flatIntVars": 64,
+        "flatIntConstraints": 8,
+        "method": "satisfy",
+        "flatTime": 0.547013
+      },
+      "layered_multigraph_sync_ms": null,
+      "errors": [],
+      "stdout": "% Generated FlatZinc statistics:\r\n%%%mzn-stat: paths=0\r\n%%%mzn-stat: flatIntVars=64\r\n%%%mzn-stat: flatIntConstraints=8\r\n%%%mzn-stat: method=\"satisfy\"\r\n%%%mzn-stat: flatTime=0.547013\r\n%%%mzn-stat-end\r\n% Logging successfully configured\r\n",
+      "stderr": ""
+    },
+    "dfa": {
+      "solver_id": "nl.tudelft.algorithmics.pumpkin-regular",
+      "dzn": "instances_dzn/dfa/0_low_blowup/polyominoes_98.dzn",
+      "status": "TIMEOUT",
+      "exit_code": null,
+      "stats": {
+        "paths": 0,
+        "flatIntVars": 64,
+        "flatIntConstraints": 8,
+        "method": "satisfy",
+        "flatTime": 0.646577
+      },
+      "layered_multigraph_sync_ms": null,
+      "errors": [],
+      "stdout": "% Generated FlatZinc statistics:\r\n%%%mzn-stat: paths=0\r\n%%%mzn-stat: flatIntVars=64\r\n%%%mzn-stat: flatIntConstraints=8\r\n%%%mzn-stat: method=\"satisfy\"\r\n%%%mzn-stat: flatTime=0.646577\r\n%%%mzn-stat-end\r\n% Logging successfully configured\r\n",
+      "stderr": ""
+    }
+  }
+}

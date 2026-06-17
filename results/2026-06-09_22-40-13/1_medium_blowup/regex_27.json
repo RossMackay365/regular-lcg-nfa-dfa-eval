@@ -1,0 +1,120 @@
+{
+  "instance": "regex_27",
+  "problem_type": "regex",
+  "blowup_bin": "1_medium_blowup",
+  "blowup": 2.1739130434782608,
+  "timeout_seconds": 1200,
+  "model": "models/regex.mzn",
+  "construction": {
+    "nfa_glushkov": {
+      "ms": [
+        2.2516000317409635,
+        4.435700015164912
+      ],
+      "ms_total": 6.687300046905875,
+      "states": [
+        21,
+        45
+      ],
+      "states_total": 66
+    },
+    "nfa_rbisim": {
+      "ms": [
+        3.01510002464056,
+        32.96909999335185
+      ],
+      "ms_total": 35.98420001799241,
+      "states": [
+        8,
+        15
+      ],
+      "states_total": 23
+    },
+    "dfa_subset": {
+      "ms": [
+        2.1023000008426607,
+        0.9986000368371606
+      ],
+      "ms_total": 3.1009000376798213,
+      "states": [
+        48,
+        45
+      ],
+      "states_total": 93
+    },
+    "dfa_min": {
+      "ms": [
+        8.749900036491454,
+        11.738099972717464
+      ],
+      "ms_total": 20.488000009208918,
+      "states": [
+        34,
+        16
+      ],
+      "states_total": 50
+    }
+  },
+  "configs": {
+    "nfa": {
+      "solver_id": "nl.tudelft.algorithmics.pumpkin-regular",
+      "dzn": "instances_dzn/nfa/1_medium_blowup/regex_27.dzn",
+      "status": "TIMEOUT",
+      "exit_code": null,
+      "stats": {
+        "paths": 0,
+        "flatIntVars": 20,
+        "flatIntConstraints": 3,
+        "method": "maximize",
+        "flatTime": 0.248493
+      },
+      "layered_multigraph_sync_ms": null,
+      "errors": [],
+      "stdout": "% Generated FlatZinc statistics:\r\n%%%mzn-stat: paths=0\r\n%%%mzn-stat: flatIntVars=20\r\n%%%mzn-stat: flatIntConstraints=3\r\n%%%mzn-stat: method=\"maximize\"\r\n%%%mzn-stat: flatTime=0.248493\r\n%%%mzn-stat-end\r\n% Logging successfully configured\r\n",
+      "stderr": ""
+    },
+    "dfa": {
+      "solver_id": "nl.tudelft.algorithmics.pumpkin-regular",
+      "dzn": "instances_dzn/dfa/1_medium_blowup/regex_27.dzn",
+      "status": "SATISFIED",
+      "exit_code": 0,
+      "stats": {
+        "paths": 0,
+        "flatIntVars": 20,
+        "flatIntConstraints": 3,
+        "method": "maximize",
+        "flatTime": 0.529952,
+        "initTime": 0.0439054,
+        "objective": 288,
+        "nodes": 138,
+        "restarts": 0,
+        "peakDepth": 5,
+        "solveTime": 1015.4712798,
+        "variables": 21,
+        "propagators": 5,
+        "failures": 34,
+        "propagations": 904,
+        "nogoods": 34,
+        "numAtomicConstraintsPropagated": 0,
+        "regularDfaPropagatorNumber1LayeredMultigraphSyncTimeNs": 49564000,
+        "regularDfaPropagatorNumber2LayeredMultigraphSyncTimeNs": 17067700,
+        "AverageConflictSize": 20.08823529411765,
+        "NumUnitNogoodsLearned": 1,
+        "AverageLearnedNogoodLength": 3.176470588235294,
+        "AverageBacktrackAmount": 0,
+        "AverageLbd": 3.176470588235294,
+        "2AutonomousSearchNumBackupCalled": 0,
+        "2AutonomousSearchNumPredicatesRemoved": 0,
+        "2AutonomousSearchNumCalls": 30,
+        "2AutonomousSearchNumPredicatesAdded": 491,
+        "2AutonomousSearchAverageSizeOfHeap": 53.46666666666667,
+        "2AutonomousSearchNumAssignedPredicatesEncountered": 1604,
+        "nSolutions": 1
+      },
+      "layered_multigraph_sync_ms": 66.6317,
+      "errors": [],
+      "stdout": "% Generated FlatZinc statistics:\r\n%%%mzn-stat: paths=0\r\n%%%mzn-stat: flatIntVars=20\r\n%%%mzn-stat: flatIntConstraints=3\r\n%%%mzn-stat: method=\"maximize\"\r\n%%%mzn-stat: flatTime=0.529952\r\n%%%mzn-stat-end\r\n% Logging successfully configured\r\n%%%mzn-stat: initTime=0.0439054\r\n%%%mzn-stat: objective=288\r\n%%%mzn-stat: nodes=138\r\n%%%mzn-stat: restarts=0\r\n%%%mzn-stat: peakDepth=5\r\n%%%mzn-stat: solveTime=1015.4712798\r\n%%%mzn-stat: variables=21\r\n%%%mzn-stat: propagators=5\r\n%%%mzn-stat: failures=34\r\n%%%mzn-stat: propagations=904\r\n%%%mzn-stat: nogoods=34\r\n%%%mzn-stat: numAtomicConstraintsPropagated=0\r\n%%%mzn-stat: regularDfaPropagatorNumber1LayeredMultigraphSyncTimeNs=49564000\r\n%%%mzn-stat: regularDfaPropagatorNumber2LayeredMultigraphSyncTimeNs=17067700\r\n%%%mzn-stat: AverageConflictSize=20.08823529411765\r\n%%%mzn-stat: NumUnitNogoodsLearned=1\r\n%%%mzn-stat: AverageLearnedNogoodLength=3.176470588235294\r\n%%%mzn-stat: AverageBacktrackAmount=0\r\n%%%mzn-stat: AverageLbd=3.176470588235294\r\n%%%mzn-stat: 2AutonomousSearchNumBackupCalled=0\r\n%%%mzn-stat: 2AutonomousSearchNumPredicatesRemoved=0\r\n%%%mzn-stat: 2AutonomousSearchNumCalls=30\r\n%%%mzn-stat: 2AutonomousSearchNumPredicatesAdded=491\r\n%%%mzn-stat: 2AutonomousSearchAverageSizeOfHeap=53.46666666666667\r\n%%%mzn-stat: 2AutonomousSearchNumAssignedPredicatesEncountered=1604\r\n%%%mzn-stat-end\r\nvariables = [3, 2, 3, 3, 3, 3, 2, 3, 2, 3, 2, 3, 3, 2, 3, 3, 3, 3, 3];\r\n----------\r\n==========\r\n%%%mzn-stat: initTime=0.0439054\r\n%%%mzn-stat: objective=288\r\n%%%mzn-stat: nodes=138\r\n%%%mzn-stat: restarts=0\r\n%%%mzn-stat: peakDepth=5\r\n%%%mzn-stat: solveTime=1015.4712798\r\n%%%mzn-stat: variables=21\r\n%%%mzn-stat: propagators=5\r\n%%%mzn-stat: failures=34\r\n%%%mzn-stat: propagations=904\r\n%%%mzn-stat: nogoods=34\r\n%%%mzn-stat: numAtomicConstraintsPropagated=0\r\n%%%mzn-stat: regularDfaPropagatorNumber1LayeredMultigraphSyncTimeNs=49564000\r\n%%%mzn-stat: regularDfaPropagatorNumber2LayeredMultigraphSyncTimeNs=17067700\r\n%%%mzn-stat: AverageConflictSize=20.08823529411765\r\n%%%mzn-stat: NumUnitNogoodsLearned=1\r\n%%%mzn-stat: AverageLearnedNogoodLength=3.176470588235294\r\n%%%mzn-stat: AverageBacktrackAmount=0\r\n%%%mzn-stat: AverageLbd=3.176470588235294\r\n%%%mzn-stat: 2AutonomousSearchNumBackupCalled=0\r\n%%%mzn-stat: 2AutonomousSearchNumPredicatesRemoved=0\r\n%%%mzn-stat: 2AutonomousSearchNumCalls=30\r\n%%%mzn-stat: 2AutonomousSearchNumPredicatesAdded=491\r\n%%%mzn-stat: 2AutonomousSearchAverageSizeOfHeap=53.46666666666667\r\n%%%mzn-stat: 2AutonomousSearchNumAssignedPredicatesEncountered=1604\r\n%%%mzn-stat-end\r\n%%%mzn-stat: nSolutions=1\r\n%%%mzn-stat-end\r\n",
+      "stderr": ""
+    }
+  }
+}

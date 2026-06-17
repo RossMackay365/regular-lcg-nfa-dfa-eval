@@ -1,0 +1,94 @@
+{
+  "instance": "regex_75",
+  "problem_type": "regex",
+  "blowup_bin": "1_medium_blowup",
+  "blowup": 9.380952380952381,
+  "timeout_seconds": 1200,
+  "model": "models/regex.mzn",
+  "construction": {
+    "nfa_glushkov": {
+      "ms": [
+        2.9429999995045364,
+        2.4657000321894884
+      ],
+      "ms_total": 5.408700031694025,
+      "states": [
+        37,
+        21
+      ],
+      "states_total": 58
+    },
+    "nfa_rbisim": {
+      "ms": [
+        8.113900024909526,
+        4.205400007776916
+      ],
+      "ms_total": 12.319300032686442,
+      "states": [
+        14,
+        7
+      ],
+      "states_total": 21
+    },
+    "dfa_subset": {
+      "ms": [
+        16.270599968265742,
+        0.48770004650577903
+      ],
+      "ms_total": 16.75830001477152,
+      "states": [
+        250,
+        21
+      ],
+      "states_total": 271
+    },
+    "dfa_min": {
+      "ms": [
+        234.75830000825226,
+        2.356800017878413
+      ],
+      "ms_total": 237.11510002613068,
+      "states": [
+        189,
+        8
+      ],
+      "states_total": 197
+    }
+  },
+  "configs": {
+    "nfa": {
+      "solver_id": "nl.tudelft.algorithmics.pumpkin-regular",
+      "dzn": "instances_dzn/nfa/1_medium_blowup/regex_75.dzn",
+      "status": "TIMEOUT",
+      "exit_code": null,
+      "stats": {
+        "paths": 0,
+        "flatIntVars": 21,
+        "flatIntConstraints": 3,
+        "method": "maximize",
+        "flatTime": 0.268834
+      },
+      "layered_multigraph_sync_ms": null,
+      "errors": [],
+      "stdout": "% Generated FlatZinc statistics:\r\n%%%mzn-stat: paths=0\r\n%%%mzn-stat: flatIntVars=21\r\n%%%mzn-stat: flatIntConstraints=3\r\n%%%mzn-stat: method=\"maximize\"\r\n%%%mzn-stat: flatTime=0.268834\r\n%%%mzn-stat-end\r\n% Logging successfully configured\r\n",
+      "stderr": ""
+    },
+    "dfa": {
+      "solver_id": "nl.tudelft.algorithmics.pumpkin-regular",
+      "dzn": "instances_dzn/dfa/1_medium_blowup/regex_75.dzn",
+      "status": "TIMEOUT",
+      "exit_code": null,
+      "stats": {
+        "paths": 0,
+        "flatIntVars": 21,
+        "flatIntConstraints": 3,
+        "method": "maximize",
+        "flatTime": 14.9249
+      },
+      "layered_multigraph_sync_ms": null,
+      "errors": [],
+      "stdout": "% Generated FlatZinc statistics:\r\n%%%mzn-stat: paths=0\r\n%%%mzn-stat: flatIntVars=21\r\n%%%mzn-stat: flatIntConstraints=3\r\n%%%mzn-stat: method=\"maximize\"\r\n%%%mzn-stat: flatTime=14.9249\r\n%%%mzn-stat-end\r\n% Logging successfully configured\r\n",
+      "stderr": ""
+    }
+  }
+}
