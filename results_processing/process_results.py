@@ -258,13 +258,19 @@ def _md_table(headers: list[str], rows: list[list[str]]) -> str:
     return "\n".join([fmt_row(headers), sep, *(fmt_row(r) for r in rows)])
 
 
-def construction_table(df: pd.DataFrame) -> str:
+def construction_table(df: pd.DataFrame, group_by: str = "bin") -> str:
     u = df.drop_duplicates("instance")
+    if group_by == "bin":
+        group_col, first_header, keys = "bin", "Bin", TABLE_BINS
+    else:
+        group_col = GROUPINGS[group_by]["col"]
+        first_header = GROUPINGS[group_by]["axis_label"]
+        keys = _group_keys(group_by)
     rows = []
-    for key, label in TABLE_BINS:
-        sub = u if key is None else u[u["bin"] == key]
+    for key, label in keys:
+        sub = u if key is None else u[u[group_col] == key]
         rows.append([label] + [_fmt(gmean(sub[col])) for col, _ in CONSTRUCTION_COLS])
-    return _md_table(["Bin"] + [h for _, h in CONSTRUCTION_COLS], rows)
+    return _md_table([first_header] + [h for _, h in CONSTRUCTION_COLS], rows)
 
 
 def clause_quality_instances(df: pd.DataFrame) -> pd.DataFrame:
@@ -330,6 +336,8 @@ def build_tables(df: pd.DataFrame) -> str:
     sections = [
         ("Geometric mean automaton construction time (ms) by blowup bin and pipeline step",
          construction_table(df)),
+        ("Geometric mean automaton construction time (ms) by problem type and pipeline step",
+         construction_table(df, "problem_type")),
         ("Geometric mean solve time (s) by blowup bin and configuration (instances solved by every config)",
          config_time_table(df, "solveTime")),
         ("Geometric mean solve time (s) by problem type and configuration (instances solved by every config)",

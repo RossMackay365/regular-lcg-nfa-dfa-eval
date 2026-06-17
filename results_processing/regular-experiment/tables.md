@@ -7,6 +7,15 @@
 | High   | 4.454         | 12.559            | 119.124                  | 4019.061          |
 | Total  | 11.921        | 58.846            | 32.593                   | 580.639           |
 
+### Geometric mean automaton construction time (ms) by problem type and pipeline step
+
+| Problem Type | Glushkov (ms) | Bisimulation (ms) | Subset Construction (ms) | Minimisation (ms) |
+| ------------ | ------------- | ----------------- | ------------------------ | ----------------- |
+| Nonogram     | 33.423        | 85.352            | 8.371                    | 107.611           |
+| Polyominoes  | 349.868       | 55145.249         | 1121.804                 | 40072.966         |
+| Regex        | 4.201         | 10.983            | 20.247                   | 333.415           |
+| Total        | 11.921        | 58.846            | 32.593                   | 580.639           |
+
 ### Geometric mean solve time (s) by blowup bin and configuration (instances solved by every config)
 
 | Bin    | Solved (n) | NFA (s) | DFA (s) | Decomp (s) |

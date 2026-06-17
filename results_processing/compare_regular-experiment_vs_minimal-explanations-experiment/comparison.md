@@ -1,0 +1,39 @@
+### Nogood statistics: percentage difference between runs (overall)
+
+Run A = `regular-experiment`, Run B = `minimal-explanations-experiment`. Included instances (no NFA/DFA timeout in either run): **85**.
+
+| Metric            | NFA regular-experiment | NFA minimal-explanations-experiment | NFA %Δ (gmean) | DFA regular-experiment | DFA minimal-explanations-experiment | DFA %Δ (gmean) |
+| ----------------- | ---------------------- | ----------------------------------- | -------------- | ---------------------- | ----------------------------------- | -------------- |
+| Nogoods           | 293.18                 | 290.98                              | -0.75%         | 293.14                 | 291.13                              | -0.69%         |
+| Avg Nogood Length | 6.57                   | 6.51                                | -0.89%         | 6.57                   | 6.52                                | -0.81%         |
+| Avg LBD           | 5.093                  | 5.087                               | -0.12%         | 5.093                  | 5.088                               | -0.09%         |
+
+### Nogood statistics: percentage difference between runs (Nonogram)
+
+Included instances: **22**.
+
+| Metric            | NFA regular-experiment | NFA minimal-explanations-experiment | NFA %Δ (gmean) | DFA regular-experiment | DFA minimal-explanations-experiment | DFA %Δ (gmean) |
+| ----------------- | ---------------------- | ----------------------------------- | -------------- | ---------------------- | ----------------------------------- | -------------- |
+| Nogoods           | 48.75                  | 47.26                               | -3.07%         | 48.73                  | 47.36                               | -2.83%         |
+| Avg Nogood Length | 13.04                  | 12.56                               | -3.65%         | 13.04                  | 12.61                               | -3.31%         |
+| Avg LBD           | 4.527                  | 4.505                               | -0.50%         | 4.527                  | 4.510                               | -0.37%         |
+
+### Nogood statistics: percentage difference between runs (Polyominoes)
+
+Included instances: **2**.
+
+| Metric            | NFA regular-experiment | NFA minimal-explanations-experiment | NFA %Δ (gmean) | DFA regular-experiment | DFA minimal-explanations-experiment | DFA %Δ (gmean) |
+| ----------------- | ---------------------- | ----------------------------------- | -------------- | ---------------------- | ----------------------------------- | -------------- |
+| Nogoods           | 28.11                  | 28.11                               | +0.00%         | 28.11                  | 28.11                               | +0.00%         |
+| Avg Nogood Length | 5.04                   | 5.04                                | +0.00%         | 5.04                   | 5.04                                | +0.00%         |
+| Avg LBD           | 5.040                  | 5.040                               | +0.00%         | 5.040                  | 5.040                               | +0.00%         |
+
+### Nogood statistics: percentage difference between runs (Regex)
+
+Included instances: **61**.
+
+| Metric            | NFA regular-experiment | NFA minimal-explanations-experiment | NFA %Δ (gmean) | DFA regular-experiment | DFA minimal-explanations-experiment | DFA %Δ (gmean) |
+| ----------------- | ---------------------- | ----------------------------------- | -------------- | ---------------------- | ----------------------------------- | -------------- |
+| Nogoods           | 570.12                 | 570.12                              | +0.00%         | 570.12                 | 570.12                              | +0.00%         |
+| Avg Nogood Length | 5.29                   | 5.29                                | +0.00%         | 5.29                   | 5.29                                | +0.00%         |
+| Avg LBD           | 5.295                  | 5.295                               | +0.00%         | 5.295                  | 5.295                               | +0.00%         |
