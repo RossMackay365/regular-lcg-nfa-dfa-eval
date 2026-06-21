@@ -198,7 +198,7 @@ def plot_metric(
                 color="#444444",
             )
 
-    ax.set_title(title, fontsize=FONT["title"], fontweight="bold", pad=20, color="#00A6D6")
+    ax.set_title(title, fontsize=FONT["title"], fontweight="bold", pad=20, color="#80D3EB")
     ax.set_xlabel(x_axis_label, fontsize=FONT["axis_label"], labelpad=12)
     ax.set_ylabel(ylabel,        fontsize=FONT["axis_label"])
     ax.tick_params(axis="both", labelsize=FONT["tick"])
@@ -370,7 +370,7 @@ def main() -> None:
     plot_metric(df, "total_time",   "Solve + Flat Time by Blowup Ratio", "Solve + Flat Time (ms)", out_dir / "solve_plus_flat_chart.pdf",           y_cap=Y_CAP_MS, unit="ms")
     plot_metric(df, "propagations", "Propagations by Blowup Ratio",      "Propagations",           out_dir / "propagations_chart.pdf")
     plot_metric(df, "solveTime",    "Solve Time by Problem Type",        "Solve Time (ms)",        out_dir / "solve_time_by_problem_type.pdf",      group_by="problem_type", y_cap=Y_CAP_MS, y_floor=10, unit="ms")
-    plot_metric(df, "solve_minus_recon", "Solve Time Excluding Reconstruction Cost", "Solve − Reconstruction Time (ms)", out_dir / "solve_minus_recon_chart.pdf", y_cap=Y_CAP_MS, unit="ms")
+    plot_metric(df, "solve_minus_recon", "Solve Time Excluding Per-Call Rebuild Cost", "Solve Time Minus Per-Call Rebuild Cost (ms)", out_dir / "solve_minus_recon_chart.pdf", y_cap=Y_CAP_MS, unit="ms")
 
     tables = build_tables(df)
     (out_dir / "tables.md").write_text(tables + "\n", encoding="utf-8")
